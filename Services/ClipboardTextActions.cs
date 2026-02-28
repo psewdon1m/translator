@@ -123,13 +123,13 @@ public sealed class ClipboardTextActions
 
             var seqBefore = NativeMethods.GetClipboardSequenceNumber();
 
-            _input.SendCtrlCombo(Keys.C);
+            _input.SendCtrlInsert();
             if (WaitForClipboardUpdate(seqBefore, 120))
             {
                 return true;
             }
 
-            _input.SendCtrlInsert();
+            _input.SendCtrlCombo(Keys.C);
             if (WaitForClipboardUpdate(seqBefore, 120))
             {
                 return true;
@@ -203,7 +203,7 @@ public sealed class ClipboardTextActions
 
             _input.ReleaseModifiers();
             Thread.Sleep(8);
-            _input.SendCtrlCombo(Keys.V);
+            _input.SendShiftInsert();
             Thread.Sleep(24);
             return true;
         }

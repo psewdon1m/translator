@@ -116,7 +116,14 @@ public sealed class KeyboardLayoutService
 
         if (targetHwnd != IntPtr.Zero && NativeMethods.IsWindow(targetHwnd))
         {
+            NativeMethods.ActivateKeyboardLayout(hkl, 0);
             NativeMethods.PostMessage(targetHwnd, NativeMethods.WM_INPUTLANGCHANGEREQUEST, IntPtr.Zero, hkl);
+
+            var foreground = NativeMethods.GetForegroundWindow();
+            if (foreground != IntPtr.Zero && foreground != targetHwnd && NativeMethods.IsWindow(foreground))
+            {
+                NativeMethods.PostMessage(foreground, NativeMethods.WM_INPUTLANGCHANGEREQUEST, IntPtr.Zero, hkl);
+            }
         }
         else
         {
@@ -140,6 +147,11 @@ public sealed class KeyboardLayoutService
             keyState[NativeMethods.VK_SHIFT] = 0x80;
         }
 
+        if (IsToggled(NativeMethods.VK_CAPITAL))
+        {
+            keyState[NativeMethods.VK_CAPITAL] = 0x01;
+        }
+
         if (IsPressed(NativeMethods.VK_CONTROL))
         {
             keyState[NativeMethods.VK_CONTROL] = 0x80;
@@ -160,7 +172,9 @@ public sealed class KeyboardLayoutService
         return sb[0];
     }
 
-    private static bool IsPressed(int vk) => (NativeMethods.GetKeyState(vk) & 0x8000) != 0;
+    private static bool IsPressed(int vk) => (NativeMethods.GetAsyncKeyState(vk) & 0x8000) != 0;
+
+    private static bool IsToggled(int vk) => (NativeMethods.GetKeyState(vk) & 0x0001) != 0;
 
     private static IntPtr ResolveFocusedTargetWindow()
     {

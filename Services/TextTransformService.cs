@@ -107,7 +107,7 @@ public sealed class TextTransformService
 
         if (_puntoData is not null && _puntoData.TryWholeWordMapping(word, sourceScript, out var mappedByDictionary))
         {
-            converted = mappedByDictionary;
+            converted = ApplySourceCasePattern(word, mappedByDictionary);
             target = sourceScript == LanguageScript.English ? LanguageScript.Russian : LanguageScript.English;
             return converted != word;
         }
@@ -201,6 +201,50 @@ public sealed class TextTransformService
 
         changed = false;
         return ch;
+    }
+
+    private static string ApplySourceCasePattern(string source, string target)
+    {
+        if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
+        {
+            return target;
+        }
+
+        var sourceLetters = source.Where(char.IsLetter).ToArray();
+        if (sourceLetters.Length == 0)
+        {
+            return target;
+        }
+
+        if (sourceLetters.All(char.IsUpper))
+        {
+            return target.ToUpperInvariant();
+        }
+
+        if (char.IsUpper(sourceLetters[0]) && sourceLetters.Skip(1).All(char.IsLower))
+        {
+            return char.ToUpperInvariant(target[0]) + target[1..].ToLowerInvariant();
+        }
+
+        var targetChars = target.ToCharArray();
+        var sourceLetterIndex = 0;
+        for (var i = 0; i < targetChars.Length; i++)
+        {
+            if (!char.IsLetter(targetChars[i]))
+            {
+                continue;
+            }
+
+            var patternSource = sourceLetterIndex < sourceLetters.Length
+                ? sourceLetters[sourceLetterIndex]
+                : sourceLetters[^1];
+            targetChars[i] = char.IsUpper(patternSource)
+                ? char.ToUpperInvariant(targetChars[i])
+                : char.ToLowerInvariant(targetChars[i]);
+            sourceLetterIndex++;
+        }
+
+        return new string(targetChars);
     }
 
     private static int ScoreEnglishLike(string text)

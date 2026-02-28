@@ -275,17 +275,14 @@ public sealed class KeyboardHookService : IDisposable
         {
             case HookAction.ToggleAuto:
                 if (IsDebounced(fire.Value, 220)) break;
-                DebugLog.Write("Hook: fire ToggleAuto");
                 FireAfterModifiersRelease(ToggleAutoSwitchRequested);
                 break;
             case HookAction.ConvertSelection:
                 if (IsDebounced(fire.Value, 900)) break;
-                DebugLog.Write("Hook: fire ConvertSelection");
                 FireAfterModifiersRelease(ConvertSelectionRequested);
                 break;
             case HookAction.InvertSelection:
                 if (IsDebounced(fire.Value, 900)) break;
-                DebugLog.Write("Hook: fire InvertSelection");
                 FireAfterModifiersRelease(InvertSelectionRequested);
                 break;
         }
@@ -376,7 +373,6 @@ public sealed class KeyboardHookService : IDisposable
         }
 
         _pendingAutoReplacement = null;
-        DebugLog.Write($"Hook: auto replace request '{pending.SourceWord}' -> '{pending.ConvertedWord}'");
         AutoReplaceRequested?.Invoke(new AutoReplaceRequest(
             pending.SourceWord,
             pending.ConvertedWord,

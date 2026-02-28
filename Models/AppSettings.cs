@@ -5,7 +5,7 @@ namespace TranslatorTray.Models;
 
 public sealed class AppSettings
 {
-    public int SettingsVersion { get; set; } = 4;
+    public int SettingsVersion { get; set; } = 6;
     public bool AutoSwitchEnabled { get; set; } = true;
     public bool SuspendAutoSwitchUntilDelimiterAfterManualSwitch { get; set; } = true;
     public bool OneKeySwitchRuEnOnly { get; set; } = true;
@@ -13,6 +13,15 @@ public sealed class AppSettings
     public bool PlaySoundOnLayoutSwitch { get; set; } = true;
     public bool PlaySoundOnAutoToggle { get; set; } = true;
     public bool PlaySoundOnTextActions { get; set; } = true;
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public SoundPreset LayoutSwitchSound { get; set; } = SoundPreset.LayoutSwitch;
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public SoundPreset AutoToggleSound { get; set; } = SoundPreset.AutoToggle;
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public SoundPreset TextActionSound { get; set; } = SoundPreset.TextAction;
+    public string LayoutSwitchSoundId { get; set; } = "builtin:layout-switch";
+    public string AutoToggleSoundId { get; set; } = "builtin:auto-toggle";
+    public string TextActionSoundId { get; set; } = "builtin:text-action";
     public Keys OneKeySwitchKey { get; set; } = Keys.LControlKey;
     // Windows RegisterHotKey does not distinguish left/right modifiers for combos.
     public Hotkey ToggleAutoSwitchHotkey { get; set; } = new(Keys.Menu, ctrl: true);
@@ -22,7 +31,17 @@ public sealed class AppSettings
     public HashSet<string> ProtectedWords { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
     [JsonIgnore]
-    public int Version => 4;
+    public int Version => 6;
+}
+
+public enum SoundPreset
+{
+    LayoutSwitch = 0,
+    AutoToggle = 1,
+    TextAction = 2,
+    SoftClick = 3,
+    BrightPing = 4,
+    DoubleTick = 5
 }
 
 public sealed class Hotkey

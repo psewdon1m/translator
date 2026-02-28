@@ -5,13 +5,13 @@ using System.Windows.Forms;
 using TranslatorTray.Models;
 using TranslatorTray.Services;
 using TranslatorTray.UI;
-using System.Threading;
 
 namespace TranslatorTray;
 
 public sealed class TrayAppContext : ApplicationContext
 {
     private const string RunRegistryName = "TranslatorTray";
+    private const string TrayTooltipText = "Translator is running";
 
     private readonly NotifyIcon _trayIcon;
     private readonly SettingsStore _settingsStore;
@@ -42,7 +42,7 @@ public sealed class TrayAppContext : ApplicationContext
         _lexiconService = new LexiconService(AppContext.BaseDirectory);
         _puntoDataService = new PuntoDataService(AppContext.BaseDirectory);
         _transformService = new TextTransformService(_lexiconService, _puntoDataService);
-        _toneService = new ToneService();
+        _toneService = new ToneService(AppContext.BaseDirectory);
         _inputSimulator = new InputSimulator();
         _clipboardActions = new ClipboardTextActions(_inputSimulator, _transformService);
         _hotkeys = new GlobalHotkeyWindow();
@@ -68,9 +68,9 @@ public sealed class TrayAppContext : ApplicationContext
 
         _trayIcon = new NotifyIcon
         {
-            Icon = SystemIcons.Application,
+            Icon = AppIconService.LoadTrayIcon(AppContext.BaseDirectory),
             Visible = true,
-            Text = "Translator Tray"
+            Text = TrayTooltipText
         };
 
         _trayIcon.ContextMenuStrip = BuildMenu();
@@ -118,7 +118,6 @@ public sealed class TrayAppContext : ApplicationContext
     {
         if (Interlocked.Exchange(ref _textActionBusy, 1) == 1)
         {
-            DebugLog.Write("UI: dropping duplicate text action (busy)");
             return;
         }
 
@@ -155,11 +154,9 @@ public sealed class TrayAppContext : ApplicationContext
     {
         if (Interlocked.Exchange(ref _autoReplaceBusy, 1) == 1)
         {
-            DebugLog.Write("UI: dropping duplicate auto replace (busy)");
             return;
         }
 
-        DebugLog.Write($"UI: RunAutoReplacement '{request.SourceWord}' -> '{request.ConvertedWord}'");
         try
         {
             // Let the delimiter key settle in the target app before replacement.
@@ -178,7 +175,6 @@ public sealed class TrayAppContext : ApplicationContext
             }
             else
             {
-                DebugLog.Write("UI: RunAutoReplacement failed");
                 OnStatus("Auto replace failed", showBalloon: false);
             }
         }
@@ -190,7 +186,7 @@ public sealed class TrayAppContext : ApplicationContext
 
     private void OpenSettings()
     {
-        using var form = new SettingsForm(CloneSettings(_settings), _layoutService);
+        using var form = new SettingsForm(CloneSettings(_settings), _layoutService, _toneService);
         if (form.ShowDialog() != DialogResult.OK)
         {
             return;
@@ -216,6 +212,12 @@ public sealed class TrayAppContext : ApplicationContext
             PlaySoundOnLayoutSwitch = source.PlaySoundOnLayoutSwitch,
             PlaySoundOnAutoToggle = source.PlaySoundOnAutoToggle,
             PlaySoundOnTextActions = source.PlaySoundOnTextActions,
+            LayoutSwitchSound = source.LayoutSwitchSound,
+            AutoToggleSound = source.AutoToggleSound,
+            TextActionSound = source.TextActionSound,
+            LayoutSwitchSoundId = source.LayoutSwitchSoundId,
+            AutoToggleSoundId = source.AutoToggleSoundId,
+            TextActionSoundId = source.TextActionSoundId,
             OneKeySwitchKey = source.OneKeySwitchKey,
             ToggleAutoSwitchHotkey = CloneHotkey(source.ToggleAutoSwitchHotkey),
             ConvertSelectedTextHotkey = CloneHotkey(source.ConvertSelectedTextHotkey),
@@ -241,7 +243,7 @@ public sealed class TrayAppContext : ApplicationContext
     private void OnStatus(string message, bool showBalloon = true)
     {
         _statusMenuItem.Text = $"Status: {message}";
-        _trayIcon.Text = $"Translator Tray - {Truncate(message, 45)}";
+        _trayIcon.Text = TrayTooltipText;
         if (showBalloon)
         {
             _trayIcon.ShowBalloonTip(700, "Translator Tray", message, ToolTipIcon.Info);
@@ -252,7 +254,7 @@ public sealed class TrayAppContext : ApplicationContext
     {
         if (_settings.PlaySoundOnLayoutSwitch)
         {
-            _toneService.PlayLayoutSwitch();
+            _toneService.Play(_settings.LayoutSwitchSoundId);
         }
     }
 
@@ -260,7 +262,7 @@ public sealed class TrayAppContext : ApplicationContext
     {
         if (_settings.PlaySoundOnAutoToggle)
         {
-            _toneService.PlayAutoToggle();
+            _toneService.Play(_settings.AutoToggleSoundId);
         }
     }
 
@@ -268,7 +270,7 @@ public sealed class TrayAppContext : ApplicationContext
     {
         if (_settings.PlaySoundOnTextActions)
         {
-            _toneService.PlayTextAction();
+            _toneService.Play(_settings.TextActionSoundId);
         }
     }
 
@@ -312,9 +314,4 @@ public sealed class TrayAppContext : ApplicationContext
         base.ExitThreadCore();
     }
 
-    private static string Truncate(string text, int max)
-    {
-        if (text.Length <= max) return text;
-        return text[..max];
-    }
 }

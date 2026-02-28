@@ -6,7 +6,7 @@ namespace TranslatorTray.Services;
 
 public sealed class SettingsStore
 {
-    private const int CurrentSettingsVersion = 4;
+    private const int CurrentSettingsVersion = 6;
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         WriteIndented = true
@@ -100,6 +100,22 @@ public sealed class SettingsStore
             settings.SettingsVersion = 4;
         }
 
+        if (settings.SettingsVersion < 5)
+        {
+            settings.LayoutSwitchSound = SoundPreset.LayoutSwitch;
+            settings.AutoToggleSound = SoundPreset.AutoToggle;
+            settings.TextActionSound = SoundPreset.TextAction;
+            settings.SettingsVersion = 5;
+        }
+
+        if (settings.SettingsVersion < 6)
+        {
+            settings.LayoutSwitchSoundId = MapLegacySoundPreset(settings.LayoutSwitchSound, ToneService.BuiltinLayoutSwitchId);
+            settings.AutoToggleSoundId = MapLegacySoundPreset(settings.AutoToggleSound, ToneService.BuiltinAutoToggleId);
+            settings.TextActionSoundId = MapLegacySoundPreset(settings.TextActionSound, ToneService.BuiltinTextActionId);
+            settings.SettingsVersion = 6;
+        }
+
         // Keep requested defaults for MVP if user still has old modifier-only captures.
         if (settings.ToggleAutoSwitchHotkey.Key == Keys.ControlKey)
         {
@@ -116,5 +132,19 @@ public sealed class SettingsStore
 
         settings.SettingsVersion = CurrentSettingsVersion;
         return true;
+    }
+
+    private static string MapLegacySoundPreset(SoundPreset preset, string fallbackId)
+    {
+        return preset switch
+        {
+            SoundPreset.LayoutSwitch => ToneService.BuiltinLayoutSwitchId,
+            SoundPreset.AutoToggle => ToneService.BuiltinAutoToggleId,
+            SoundPreset.TextAction => ToneService.BuiltinTextActionId,
+            SoundPreset.SoftClick => ToneService.BuiltinSoftClickId,
+            SoundPreset.BrightPing => ToneService.BuiltinBrightPingId,
+            SoundPreset.DoubleTick => ToneService.BuiltinDoubleTickId,
+            _ => fallbackId
+        };
     }
 }

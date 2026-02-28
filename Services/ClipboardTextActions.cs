@@ -17,7 +17,6 @@ public sealed class ClipboardTextActions
 
     public bool ConvertSelectedTextLayout()
     {
-        DebugLog.Write("TextAction: ConvertSelectedTextLayout requested");
         return TransformSelection(text =>
         {
             var converted = _transform.ConvertLayout(text, out var changed);
@@ -27,7 +26,6 @@ public sealed class ClipboardTextActions
 
     public bool InvertSelectedTextCase()
     {
-        DebugLog.Write("TextAction: InvertSelectedTextCase requested");
         return TransformSelection(_transform.InvertCase);
     }
 
@@ -42,7 +40,6 @@ public sealed class ClipboardTextActions
         {
             try
             {
-                DebugLog.Write($"AutoReplace: begin sourceLen={sourceWordLength} replLen={replacementWithDelimiter.Length}");
                 _input.ReleaseModifiers();
                 Thread.Sleep(8);
                 _input.SendBackspaces(sourceWordLength + 1);
@@ -50,16 +47,13 @@ public sealed class ClipboardTextActions
 
                 if (!InsertTextViaClipboard(replacementWithDelimiter))
                 {
-                    DebugLog.Write("AutoReplace: clipboard insert failed");
                     return false;
                 }
 
-                DebugLog.Write("AutoReplace: success");
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
-                DebugLog.Write($"AutoReplace: exception {ex.GetType().Name}: {ex.Message}");
                 return false;
             }
         }
@@ -78,45 +72,37 @@ public sealed class ClipboardTextActions
                 Thread.Sleep(8);
                 if (!TryCopySelectionToClipboard())
                 {
-                    DebugLog.Write("TextAction: copy selection failed (timeout)");
                     return false;
                 }
 
                 if (!Clipboard.ContainsText())
                 {
-                    DebugLog.Write("TextAction: clipboard has no text");
                     return false;
                 }
 
                 var text = Clipboard.GetText();
                 if (string.IsNullOrEmpty(text))
                 {
-                    DebugLog.Write("TextAction: clipboard text empty");
                     return false;
                 }
 
                 var transformed = transform(text);
                 if (transformed == text)
                 {
-                    DebugLog.Write("TextAction: transform made no changes");
                     return false;
                 }
 
                 _input.ReleaseModifiers();
                 Thread.Sleep(8);
-                DebugLog.Write($"TextAction: direct replace len={transformed.Length}");
                 if (!ReplaceSelectionDirect(transformed))
                 {
-                    DebugLog.Write("TextAction: replace selection failed");
                     return false;
                 }
 
-                DebugLog.Write("TextAction: success");
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
-                DebugLog.Write($"TextAction: exception {ex.GetType().Name}: {ex.Message}");
                 return false;
             }
         }
@@ -140,14 +126,12 @@ public sealed class ClipboardTextActions
             _input.SendCtrlCombo(Keys.C);
             if (WaitForClipboardUpdate(seqBefore, 120))
             {
-                DebugLog.Write($"TextAction: copy success on attempt {attempt + 1}");
                 return true;
             }
 
             _input.SendCtrlInsert();
             if (WaitForClipboardUpdate(seqBefore, 120))
             {
-                DebugLog.Write($"TextAction: copy success via Ctrl+Insert on attempt {attempt + 1}");
                 return true;
             }
 
@@ -156,16 +140,13 @@ public sealed class ClipboardTextActions
                 SendKeys.SendWait("^c");
                 if (WaitForClipboardUpdate(seqBefore, 120))
                 {
-                    DebugLog.Write($"TextAction: copy success via SendKeys Ctrl+C on attempt {attempt + 1}");
                     return true;
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                DebugLog.Write($"TextAction: SendKeys copy fallback exception {ex.GetType().Name}: {ex.Message}");
             }
 
-            DebugLog.Write($"TextAction: copy timeout on attempt {attempt + 1}");
         }
 
         return false;
@@ -218,19 +199,16 @@ public sealed class ClipboardTextActions
             Clipboard.SetText(text, TextDataFormat.UnicodeText);
             if (!WaitForClipboardUpdate(seqBefore, 120))
             {
-                DebugLog.Write("Insert: clipboard sequence did not change");
             }
 
             _input.ReleaseModifiers();
             Thread.Sleep(8);
             _input.SendCtrlCombo(Keys.V);
             Thread.Sleep(24);
-            DebugLog.Write($"Insert: paste sent len={text.Length}");
             return true;
         }
-        catch (Exception ex)
+        catch
         {
-            DebugLog.Write($"Insert: exception {ex.GetType().Name}: {ex.Message}");
             return false;
         }
     }

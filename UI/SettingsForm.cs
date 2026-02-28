@@ -8,12 +8,17 @@ public sealed class SettingsForm : Form
 {
     private readonly AppSettings _settings;
     private readonly KeyboardLayoutService _layoutService;
+    private readonly ToneService _toneService;
+    private readonly IReadOnlyList<SoundOption> _soundOptions;
     private readonly CheckBox _autoSwitch;
     private readonly CheckBox _suspendAfterManual;
     private readonly CheckBox _ruEnOnly;
     private readonly CheckBox _playLayoutSound;
     private readonly CheckBox _playAutoToggleSound;
     private readonly CheckBox _playTextActionsSound;
+    private readonly ComboBox _layoutSoundPreset;
+    private readonly ComboBox _autoToggleSoundPreset;
+    private readonly ComboBox _textActionSoundPreset;
     private readonly CheckBox _startWithWindows;
     private readonly ComboBox _oneKeyCombo;
     private readonly TextBox _toggleAutoHotkey;
@@ -26,12 +31,15 @@ public sealed class SettingsForm : Form
 
     private TextBox? _captureTarget;
 
-    public SettingsForm(AppSettings settings, KeyboardLayoutService layoutService)
+    public SettingsForm(AppSettings settings, KeyboardLayoutService layoutService, ToneService toneService)
     {
         _settings = settings;
         _layoutService = layoutService;
+        _toneService = toneService;
+        _soundOptions = _toneService.GetAvailableSounds();
 
         Text = "Translator Tray Settings";
+        Icon = AppIconService.LoadTrayIcon(AppContext.BaseDirectory);
         Width = 700;
         Height = 620;
         StartPosition = FormStartPosition.CenterScreen;
@@ -41,7 +49,7 @@ public sealed class SettingsForm : Form
         {
             Dock = DockStyle.Fill,
             ColumnCount = 2,
-            RowCount = 12,
+            RowCount = 15,
             AutoScroll = true,
             Padding = new Padding(12)
         };
@@ -53,8 +61,11 @@ public sealed class SettingsForm : Form
         _suspendAfterManual = AddCheck(panel, "Suspend auto until delimiter after manual switch", _settings.SuspendAutoSwitchUntilDelimiterAfterManualSwitch);
         _ruEnOnly = AddCheck(panel, "One-key switch only RU/EN", _settings.OneKeySwitchRuEnOnly);
         _playLayoutSound = AddCheck(panel, "Play sound on layout switch", _settings.PlaySoundOnLayoutSwitch);
+        _layoutSoundPreset = AddSoundPresetRow(panel, "Layout switch sound", _settings.LayoutSwitchSoundId);
         _playAutoToggleSound = AddCheck(panel, "Play sound on auto-switch toggle", _settings.PlaySoundOnAutoToggle);
+        _autoToggleSoundPreset = AddSoundPresetRow(panel, "Auto-switch toggle sound", _settings.AutoToggleSoundId);
         _playTextActionsSound = AddCheck(panel, "Play sound on text actions", _settings.PlaySoundOnTextActions);
+        _textActionSoundPreset = AddSoundPresetRow(panel, "Text action sound", _settings.TextActionSoundId);
         _startWithWindows = AddCheck(panel, "Start with Windows", _settings.StartWithWindows);
 
         _oneKeyCombo = new ComboBox { Dock = DockStyle.Fill, DropDownStyle = ComboBoxStyle.DropDownList };
@@ -218,6 +229,65 @@ public sealed class SettingsForm : Form
         panel.Controls.Add(control);
     }
 
+    private ComboBox AddSoundPresetRow(TableLayoutPanel panel, string label, string selectedId)
+    {
+        var wrapper = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            AutoSize = true,
+            WrapContents = false
+        };
+
+        var combo = new ComboBox
+        {
+            Width = 260,
+            DropDownStyle = ComboBoxStyle.DropDownList
+        };
+
+        foreach (var option in _soundOptions)
+        {
+            combo.Items.Add(option);
+        }
+
+        var selectedIndex = -1;
+        for (var i = 0; i < combo.Items.Count; i++)
+        {
+            if (combo.Items[i] is SoundOption option &&
+                string.Equals(option.Id, selectedId, StringComparison.OrdinalIgnoreCase))
+            {
+                selectedIndex = i;
+                break;
+            }
+        }
+
+        if (selectedIndex >= 0)
+        {
+            combo.SelectedIndex = selectedIndex;
+        }
+        else if (combo.Items.Count > 0)
+        {
+            combo.SelectedIndex = 0;
+        }
+
+        var preview = new Button
+        {
+            Text = "Preview",
+            Width = 80
+        };
+        preview.Click += (_, _) =>
+        {
+            if (combo.SelectedItem is SoundOption option)
+            {
+                _toneService.Play(option.Id);
+            }
+        };
+
+        wrapper.Controls.Add(combo);
+        wrapper.Controls.Add(preview);
+        AddRow(panel, label, wrapper);
+        return combo;
+    }
+
     private void ApplyToSettings()
     {
         _settings.AutoSwitchEnabled = _autoSwitch.Checked;
@@ -226,6 +296,9 @@ public sealed class SettingsForm : Form
         _settings.PlaySoundOnLayoutSwitch = _playLayoutSound.Checked;
         _settings.PlaySoundOnAutoToggle = _playAutoToggleSound.Checked;
         _settings.PlaySoundOnTextActions = _playTextActionsSound.Checked;
+        _settings.LayoutSwitchSoundId = _layoutSoundPreset.SelectedItem is SoundOption layoutOption ? layoutOption.Id : ToneService.BuiltinLayoutSwitchId;
+        _settings.AutoToggleSoundId = _autoToggleSoundPreset.SelectedItem is SoundOption autoOption ? autoOption.Id : ToneService.BuiltinAutoToggleId;
+        _settings.TextActionSoundId = _textActionSoundPreset.SelectedItem is SoundOption textOption ? textOption.Id : ToneService.BuiltinTextActionId;
         _settings.StartWithWindows = _startWithWindows.Checked;
         _settings.OneKeySwitchKey = _oneKeyCombo.SelectedItem is Keys k ? k : Keys.RControlKey;
         _settings.ToggleAutoSwitchHotkey = (Hotkey)(_toggleAutoHotkey.Tag ?? _settings.ToggleAutoSwitchHotkey);

@@ -11,10 +11,10 @@ public sealed class PuntoDataService
 
     public PuntoDataService(string baseDirectory)
     {
-        TryLoadFrom(Path.Combine(baseDirectory, "example", "Punto Switcher", "Data"));
+        TryLoadFrom(Path.Combine(baseDirectory, "Data"));
         if (!IsLoaded)
         {
-            TryLoadFrom(Path.Combine(Directory.GetCurrentDirectory(), "example", "Punto Switcher", "Data"));
+            TryLoadFrom(Path.Combine(Directory.GetCurrentDirectory(), "Data"));
         }
     }
 

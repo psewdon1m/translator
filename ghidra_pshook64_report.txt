@@ -1,0 +1,421 @@
+Program: pshook64.dll
+Language: x86/little/64/default
+
+== Functions (interesting names) ==
+SetHook @ 180003ab0
+SwitchLayout @ 180003ad0
+GetCapsLockState @ 180003b00
+EnableDiaryTracking @ 180003b20
+EnableMouseEmulation @ 180003b40
+IsPasswordField @ 180003b60
+GetCaretRect @ 180003b70
+EnableF12Support @ 180003bb0
+EnableShiftF12Support @ 180003bd0
+EnableEscapeSupport @ 180003bf0
+EnableCapsLock @ 180003c10
+SetHookTimeout @ 180003c30
+ReloadLowLevelHooks @ 180003c50
+__std_exception_copy @ 180006a08
+
+== Imports (interesting) ==
+[SHLWAPI.DLL]
+[KERNEL32.DLL]
+  EnterCriticalSection
+  LeaveCriticalSection
+  HeapSize
+  ExitProcess
+  IsProcessorFeaturePresent
+  RtlUnwindEx
+  InitializeCriticalSection
+  LoadLibraryW
+  CreateEventW
+  CreateMutexW
+  WaitForSingleObject
+  ReleaseMutex
+  CloseHandle
+  GetProcAddress
+  SetEvent
+  TlsAlloc
+  InitializeSListHead
+  InterlockedPopEntrySList
+  TlsFree
+  FreeLibrary
+  TlsGetValue
+  TlsSetValue
+  InterlockedPushEntrySList
+  GetLastError
+  lstrcmpW
+  lstrcatW
+  GetCurrentProcess
+  GetPriorityClass
+  SetPriorityClass
+  GetCurrentThread
+  GetThreadPriority
+  SetThreadPriority
+  GetModuleHandleW
+  GetSystemInfo
+  GetCurrentThreadId
+  GetCurrentProcessId
+  OpenProcess
+  CreateJobObjectW
+  SetInformationJobObject
+  CreateFileMappingW
+  MapViewOfFile
+  UnmapViewOfFile
+  RtlCaptureContext
+  RtlLookupFunctionEntry
+  RtlVirtualUnwind
+  IsDebuggerPresent
+  SetUnhandledExceptionFilter
+  UnhandledExceptionFilter
+  GetSystemTimeAsFileTime
+  QueryPerformanceCounter
+  EncodePointer
+  InterlockedFlushSList
+  RtlPcToFileHeader
+  RaiseException
+  SetLastError
+  DeleteCriticalSection
+  LoadLibraryExW
+  InitializeCriticalSectionAndSpinCount
+  TerminateProcess
+  GetModuleHandleExW
+  GetModuleFileNameA
+  HeapFree
+  HeapAlloc
+  MultiByteToWideChar
+  GetStartupInfoW
+  GetFileType
+  GetStdHandle
+  LCMapStringW
+  FindFirstFileExA
+  FindClose
+  FindNextFileA
+  GetOEMCP
+  GetACP
+  GetCPInfo
+  IsValidCodePage
+  GetCommandLineA
+  GetCommandLineW
+  GetEnvironmentStringsW
+  WideCharToMultiByte
+  FreeEnvironmentStringsW
+  GetProcessHeap
+  GetStringTypeW
+  SetStdHandle
+  HeapReAlloc
+  GetConsoleCP
+  WriteFile
+  GetConsoleMode
+  SetFilePointerEx
+  FlushFileBuffers
+  WriteConsoleW
+  CreateFileW
+[USER32.DLL]
+  CallNextHookEx
+  UnhookWindowsHookEx
+  SetWindowsHookExW
+  IsWindow
+  PostMessageW
+  GetForegroundWindow
+  GetClassNameW
+  GetWindowThreadProcessId
+  GetGUIThreadInfo
+  GetKeyboardState
+  GetKeyState
+  ToAsciiEx
+  GetKeyboardLayout
+  GetMenu
+  GetMenuItemCount
+  GetMenuItemInfoW
+  GetCursorPos
+  mouse_event
+  AttachThreadInput
+  GetFocus
+  keybd_event
+  SetRectEmpty
+  PostThreadMessageW
+  CopyRect
+  IsRectEmpty
+  RegisterWindowMessageW
+  SendMessageTimeoutW
+[ADVAPI32.DLL]
+
+== Candidate Exports ==
+RWLockIPC @ 1800010e0
+~RWLock @ 180001280
+StartRead @ 1800012c0
+StartWrite @ 1800013c0
+EndRead @ 1800014a0
+EndWrite @ 180001540
+RWLock @ 1800015c0
+StartRead @ 1800015f0
+StartWrite @ 180001600
+EndRead @ 180001610
+RWLockIPCReentrant @ 180001620
+~RWLockIPCReentrant @ 180001660
+StartRead @ 1800016f0
+StartWrite @ 180001770
+EndRead @ 1800017f0
+EndWrite @ 180001870
+RWLockReentrant @ 1800018f0
+~RWLockReentrant @ 180001940
+StartRead @ 180001950
+StartWrite @ 180001960
+_guard_check_icall @ 180003690
+SetHook @ 180003ab0
+SwitchLayout @ 180003ad0
+GetCapsLockState @ 180003b00
+DLL_GetProjectVersion @ 180003b10
+EnableDiaryTracking @ 180003b20
+EnableMouseEmulation @ 180003b40
+IsPasswordField @ 180003b60
+GetCaretRect @ 180003b70
+EnableF12Support @ 180003bb0
+EnableShiftF12Support @ 180003bd0
+EnableEscapeSupport @ 180003bf0
+EnableCapsLock @ 180003c10
+SetHookTimeout @ 180003c30
+ReloadLowLevelHooks @ 180003c50
+operator_new @ 180004448
+__scrt_acquire_startup_lock @ 1800044b8
+__scrt_dllmain_after_initialize_c @ 1800044f4
+__scrt_dllmain_crt_thread_attach @ 180004540
+__scrt_dllmain_crt_thread_detach @ 180004568
+__scrt_dllmain_exception_filter @ 180004580
+__scrt_dllmain_uninitialize_c @ 1800045e4
+__scrt_initialize_crt @ 180004628
+__scrt_is_nonwritable_in_current_image @ 180004740
+__scrt_release_startup_lock @ 1800047dc
+__scrt_uninitialize_crt @ 180004800
+_onexit @ 18000482c
+atexit @ 18000487c
+dllmain_dispatch @ 180004a94
+dllmain_raw @ 180004b8c
+entry @ 180004be0
+exception @ 180004ce0
+__isa_available_init @ 180004dc4
+__scrt_is_ucrt_dll_in_use @ 180004f94
+__scrt_fastfail @ 180004fa8
+__security_init_cookie @ 1800050f8
+__DestructExceptionObject @ 180005290
+CatchIt @ 180005378
+ExFilterRethrow @ 18000543c
+_CallMemberFunction2 @ 180005ce4
+__AdjustPointer @ 180005cf4
+__BuildCatchObject @ 180005d18
+__CxxCallCatchBlock @ 180005fbc
+__TypeMatch @ 1800065e0
+Unwind@180006720 @ 180006720
+__std_type_info_compare @ 18000672c
+__vcrt_initialize @ 180006780
+__vcrt_thread_attach @ 1800067b4
+__vcrt_thread_detach @ 1800067c8
+__vcrt_uninitialize @ 1800067dc
+__C_specific_handler @ 18000680c
+__std_exception_copy @ 180006a08
+__std_exception_destroy @ 180006a98
+__vcrt_freeptd @ 1800071b8
+__vcrt_getptd_noexit @ 180007224
+__vcrt_initialize_ptd @ 1800072dc
+__vcrt_uninitialize_ptd @ 18000731c
+GetUnwindTryBlock @ 180007368
+SetUnwindTryBlock @ 1800073a0
+_CallSettingFrame @ 180007460
+_ExecutionInCatch @ 1800074a0
+_GetEstablisherFrame @ 180007514
+__FrameUnwindToEmptyState @ 18000770c
+__SehTransFilter @ 1800077a0
+_CallSETranslator @ 180007838
+_CreateFrameInfo @ 180007890
+_GetImageBase @ 180007924
+_GetThrowImageBase @ 180007938
+_IsExceptionObjectToBeDestroyed @ 18000794c
+FID_conflict:__CxxFrameHandler @ 180007ad0
+_NLG_Notify @ 180007b90
+__vcrt_initialize_pure_virtual_call_handler @ 180007bc4
+__vcrt_initialize_locks @ 180007be8
+__vcrt_uninitialize_locks @ 180007c30
+try_get_function @ 180007c68
+__vcrt_FlsAlloc @ 180007e30
+__vcrt_FlsFree @ 180007e84
+__vcrt_FlsGetValue @ 180007ed8
+__vcrt_FlsSetValue @ 180007f2c
+__vcrt_InitializeCriticalSectionEx @ 180007f94
+__vcrt_initialize_winapi_thunks @ 18000800c
+__vcrt_uninitialize_winapi_thunks @ 180008058
+_LocaleUpdate @ 180008098
+_aligned_offset_malloc_base @ 18000814c
+__acrt_call_reportfault @ 180008204
+_invoke_watson @ 180008460
+_callnewh @ 1800084b0
+_query_new_handler @ 1800084f0
+_seh_filter_dll @ 180008534
+_seh_filter_exe @ 180008548
+common_exit @ 1800086e4
+exit_or_terminate_process @ 180008850
+try_cor_exit_process @ 18000889c
+_cexit @ 180008910
+parse_command_line<char> @ 180008934
+__acrt_allocate_buffer_for_argv @ 180008af0
+_configure_narrow_argv @ 180008b54
+common_initialize_environment_nolock<char> @ 180008ccc
+free_environment<> @ 180008e34
+uninitialize_environment_internal<> @ 180008e78
+uninitialize_environment_internal<> @ 180008e94
+__dcrt_uninitialize_environments_nolock @ 180008eb0
+operator()<class_<lambda_b8c45f8f788dd370798f47cfe8ac3a86>,class_<lambda_4e60a939b0d047cfe11ddc22648dfba9>&___ptr64,class_<lambda_332c3edc96d0294ec56c57d38c1cdfd5>_> @ 180008ef0
+operator()<class_<lambda_e24bbb7b643b32fcea6fa61b31d4c984>,class_<lambda_275893d493268fdec8709772e3fcec0e>&___ptr64,class_<lambda_9d71df4d7cf3f480f8d633942495c3b0>_> @ 180008f2c
+operator() @ 1800090cc
+_execute_onexit_table @ 1800092b8
+_initialize_onexit_table @ 1800092f4
+_register_onexit_function @ 180009334
+__acrt_thread_attach @ 1800094c8
+__acrt_thread_detach @ 1800094dc
+_initterm @ 180009510
+_initterm_e @ 180009588
+terminate @ 1800095d4
+abort @ 1800095fc
+_free_base @ 180009654
+_malloc_base @ 180009694
+strcpy_s @ 1800096f4
+_calloc_base @ 180009754
+__acrt_errno_from_os_error @ 1800097cc
+__acrt_errno_map_os_error @ 180009814
+__doserrno @ 180009864
+__doserrno @ 180009884
+_mbtowc_l @ 1800098a4
+operator()<> @ 1800099f4
+operator()<> @ 180009a54
+operator()<> @ 180009a9c
+operator()<> @ 180009adc
+construct_ptd_array @ 180009b1c
+destroy_ptd_array @ 180009c0c
+replace_current_thread_locale_nolock @ 180009d04
+__acrt_freeptd @ 180009d6c
+__acrt_getptd_noexit @ 180009e44
+__acrt_initialize_ptd @ 180009ee4
+__acrt_uninitialize_ptd @ 180009f20
+_fileno @ 180009fac
+__acrt_initialize_stdio @ 180009fd4
+__acrt_uninitialize_stdio @ 18000a0f4
+__acrt_uninitialize_locale @ 18000a174
+initialize_inherited_file_handles_nolock @ 18000a1bc
+initialize_stdio_handles_nolock @ 18000a2a8
+__acrt_initialize_lowio @ 18000a3a4
+__acrt_uninitialize_lowio @ 18000a3e0
+_msize @ 18000a420
+__acrt_initialize_locks @ 18000a45c
+__acrt_lock @ 18000a4a4
+__acrt_uninitialize_locks @ 18000a4c0
+__acrt_unlock @ 18000a4f8
+try_get_function @ 18000a514
+__acrt_FlsAlloc @ 18000a6b4
+__acrt_FlsFree @ 18000a70c
+__acrt_FlsGetValue @ 18000a764
+__acrt_FlsSetValue @ 18000a7bc
+__acrt_InitializeCriticalSectionEx @ 18000a824
+__acrt_LCMapStringEx @ 18000a89c
+__acrt_LocaleNameToLCID @ 18000a98c
+__acrt_initialize_winapi_thunks @ 18000a9f4
+__acrt_is_packaged_app @ 18000aa2c
+__acrt_uninitialize_winapi_thunks @ 18000aab4
+expand_argument_wildcards<> @ 18000ae28
+expand_if_necessary @ 18000afd4
+operator()<> @ 18000b0a4
+getSystemCP @ 18000b2f4
+setSBCS @ 18000b374
+setSBUpLow @ 18000b404
+__acrt_initialize_multibyte @ 18000b7a0
+_setmbcp_nolock @ 18000b888
+x_ismbbtype_l @ 18000bb30
+_ismbblead @ 18000bba8
+__dcrt_get_narrow_environment_from_os @ 18000bbe4
+_recalloc_base @ 18000bcf0
+__acrt_execute_initializers @ 18000bdb0
+__acrt_execute_uninitializers @ 18000be44
+operator()<> @ 18000be94
+__acrt_get_sigabrt_handler @ 18000bedc
+raise @ 18000bf2c
+__acrt_invoke_user_matherr @ 18000c1f0
+__pctype_func @ 18000c240
+_isleadbyte_l @ 18000c270
+__acrt_LCMapStringA_stat @ 18000c2b0
+__acrt_LCMapStringA @ 18000c60c
+__acrt_add_locale_ref @ 18000c6a4
+__acrt_free_locale @ 18000c730
+__acrt_locale_add_lc_time_reference @ 18000c8a8
+__acrt_locale_free_lc_time_if_unreferenced @ 18000c8d0
+__acrt_locale_release_lc_time_reference @ 18000c908
+__acrt_release_locale_ref @ 18000c930
+_updatetlocinfoEx_nolock @ 18000ca48
+_fcloseall @ 18000cab0
+__acrt_stdio_flush_nolock @ 18000cb64
+_fflush_nolock @ 18000cbdc
+common_flush_all @ 18000cc34
+__acrt_stdio_free_buffer_nolock @ 18000cd18
+_isatty @ 18000cd58
+__acrt_locale_free_monetary @ 18000cdb8
+__acrt_locale_free_numeric @ 18000cec4
+free_crt_array_internal @ 18000cf30
+__acrt_locale_free_time @ 18000cf88
+__acrt_GetStringTypeA @ 18000d090
+__acrt_lowio_create_handle_array @ 18000d244
+__acrt_lowio_destroy_handle_array @ 18000d2dc
+__acrt_lowio_ensure_fh_exists @ 18000d32c
+FID_conflict:__acrt_lowio_lock_fh @ 18000d3e4
+FID_conflict:__acrt_lowio_lock_fh @ 18000d408
+_free_osfhnd @ 18000d42c
+_get_osfhandle @ 18000d4e8
+GetTableIndexFromLocaleName @ 18000d560
+__acrt_DownlevelLocaleNameToLCID @ 18000d628
+shortsort @ 18000d660
+qsort @ 18000d730
+strncpy_s @ 18000da64
+FID_conflict:fallbackMethod @ 18000db38
+_mbsdec_l @ 18000dbe0
+_realloc_base @ 18000dc90
+__strncnt @ 18000dd14
+write_double_translated_ansi_nolock @ 18000e2dc
+write_text_ansi_nolock @ 18000e4e4
+write_text_utf16le_nolock @ 18000e5ec
+write_text_utf8_nolock @ 18000e708
+_write @ 18000e87c
+_write_nolock @ 18000e968
+common_lseek_nolock<__int64> @ 18000ec4c
+_fclose_nolock @ 18000ecf0
+fclose @ 18000ed74
+operator()<class_<lambda_b521505b218e5242e90febf6bfebc422>,class_<lambda_6978c1fb23f02e42e1d9e99668cc68aa>&___ptr64,class_<lambda_314360699dd331753a4119843814e9a7>_> @ 18000ede0
+_commit @ 18000ee6c
+_exception_enabled @ 18000ef70
+__acrt_initialize_fma3 @ 18000f160
+_putwch_nolock @ 18000f288
+operator()<class_<lambda_bfedae4ebbf01fab1bb6dcc6a9e276e0>,class_<lambda_2fe9b910cf3cbf4a0ab98a02ba45b3ec>&___ptr64,class_<lambda_237c231691f317818eb88cc1d5d642d6>_> @ 18000f2e4
+_close @ 18000f358
+_close_nolock @ 18000f3fc
+__acrt_stdio_free_stream @ 18000f4b8
+_get_fpsr @ 18000f510
+_fclrf @ 18000f52a
+_raise_exc @ 18000f560
+_raise_exc_ex @ 18000f588
+_set_errno_from_matherr @ 18000f890
+_clrfp @ 18000f8c0
+_ctrlfp @ 18000f8e0
+_set_statfp @ 18000f95c
+_statfp @ 18000f97c
+__dcrt_lowio_initialize_console_output @ 18000f990
+_FindPESection @ 18000fa00
+_IsNonwritableInCurrentImage @ 18000fa50
+_ValidateImageBase @ 18000faa0
+__GSHandlerCheck @ 18000fad0
+__GSHandlerCheckCommon @ 18000faf0
+__security_check_cookie @ 18000fb60
+__raise_securityfailure @ 18000fb84
+__report_gsfailure @ 18000fbb8
+__report_rangecheckfailure @ 18000fc8c
+__report_securityfailure @ 18000fca0
+capture_current_context @ 18000fd3c
+capture_previous_context @ 18000fdac
+_alloca_probe @ 18000fe30
+memcmp @ 18000fea0
+_guard_dispatch_icall @ 18000ff80

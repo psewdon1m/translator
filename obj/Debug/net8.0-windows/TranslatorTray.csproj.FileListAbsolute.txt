@@ -1,0 +1,16 @@
+C:\.projects\translator\obj\Debug\net8.0-windows\TranslatorTray.GeneratedMSBuildEditorConfig.editorconfig
+C:\.projects\translator\obj\Debug\net8.0-windows\TranslatorTray.AssemblyInfoInputs.cache
+C:\.projects\translator\obj\Debug\net8.0-windows\TranslatorTray.AssemblyInfo.cs
+C:\.projects\translator\obj\Debug\net8.0-windows\TranslatorTray.csproj.CoreCompileInputs.cache
+C:\.projects\translator\bin\Debug\net8.0-windows\TranslatorTray.exe
+C:\.projects\translator\bin\Debug\net8.0-windows\TranslatorTray.deps.json
+C:\.projects\translator\bin\Debug\net8.0-windows\TranslatorTray.runtimeconfig.json
+C:\.projects\translator\bin\Debug\net8.0-windows\TranslatorTray.dll
+C:\.projects\translator\bin\Debug\net8.0-windows\TranslatorTray.pdb
+C:\.projects\translator\obj\Debug\net8.0-windows\TranslatorTray.dll
+C:\.projects\translator\obj\Debug\net8.0-windows\refint\TranslatorTray.dll
+C:\.projects\translator\obj\Debug\net8.0-windows\TranslatorTray.pdb
+C:\.projects\translator\obj\Debug\net8.0-windows\TranslatorTray.genruntimeconfig.cache
+C:\.projects\translator\obj\Debug\net8.0-windows\ref\TranslatorTray.dll
+C:\.projects\translator\bin\Debug\net8.0-windows\Data\en_top10k.txt
+C:\.projects\translator\bin\Debug\net8.0-windows\Data\ru_top10k.txt

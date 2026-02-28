@@ -1,0 +1,918 @@
+==== SetHook -> SetHook @ 180003ab0 ====
+
+ulonglong SetHook(int param_1,undefined8 param_2,longlong param_3)
+
+{
+  ulonglong uVar1;
+  
+                    /* 0x3ab0  2  SetHook */
+  uVar1 = FUN_1800036a0(&DAT_18001dc40,param_1 != 0,param_3);
+  return uVar1 & 0xff;
+}
+
+
+
+
+==== SwitchLayout -> SwitchLayout @ 180003ad0 ====
+
+void SwitchLayout(LPARAM param_1)
+
+{
+  DWORD idThread;
+  BOOL BVar1;
+  HWND hWnd;
+  tagGUITHREADINFO tStack_58;
+  
+                    /* 0x3ad0  3  SwitchLayout */
+  *DAT_18001dc40 = 2;
+  DAT_18001dc40[1] = param_1;
+  if ((*(byte *)((longlong)DAT_18001dc40 + 0x5c) & 4) == 0) {
+    return;
+  }
+  hWnd = GetForegroundWindow();
+  idThread = GetWindowThreadProcessId(hWnd,(LPDWORD)0x0);
+  tStack_58.cbSize = 0x48;
+  BVar1 = GetGUIThreadInfo(idThread,&tStack_58);
+  if (BVar1 == 1) {
+    if (tStack_58.hwndCaret != (HWND)0x0) {
+      tStack_58.hwndFocus = tStack_58.hwndCaret;
+    }
+    if (tStack_58.hwndFocus != (HWND)0x0) goto LAB_18000357a;
+  }
+  tStack_58.hwndFocus = FUN_1800033a0();
+  if ((tStack_58.hwndFocus == (HWND)0x0) &&
+     (tStack_58.hwndFocus = tStack_58.hwndActive, tStack_58.hwndActive == (HWND)0x0)) {
+    tStack_58.hwndFocus = GetForegroundWindow();
+  }
+LAB_18000357a:
+  PostMessageW(tStack_58.hwndFocus,0x50,0,param_1);
+  return;
+}
+
+
+
+
+==== ReloadLowLevelHooks -> ReloadLowLevelHooks @ 180003c50 ====
+
+ulonglong ReloadLowLevelHooks(void)
+
+{
+  ulonglong uVar1;
+  
+                    /* 0x3c50  17  ReloadLowLevelHooks */
+  uVar1 = FUN_180001d20(0x18001dc58,DAT_18001dc48);
+  return uVar1 & 0xff;
+}
+
+
+
+
+==== SetHookTimeout -> SetHookTimeout @ 180003c30 ====
+
+undefined8 SetHookTimeout(uint param_1)
+
+{
+  undefined8 uVar1;
+  
+                    /* 0x3c30  16  SetHookTimeout */
+  uVar1 = *(undefined8 *)(DAT_18001dc40 + 0x60);
+  *(ulonglong *)(DAT_18001dc40 + 0x60) = (ulonglong)param_1;
+  return uVar1;
+}
+
+
+
+
+==== IsPasswordField -> IsPasswordField @ 180003b60 ====
+
+bool IsPasswordField(void)
+
+{
+                    /* 0x3b60  10  IsPasswordField */
+  return *(int *)(DAT_18001dc40 + 0x44) != 0;
+}
+
+
+
+
+==== GetCaretRect -> GetCaretRect @ 180003b70 ====
+
+bool GetCaretRect(LPRECT param_1)
+
+{
+  BOOL BVar1;
+  
+                    /* 0x3b70  11  GetCaretRect */
+  CopyRect(param_1,(RECT *)(DAT_18001dc40 + 0x4c));
+  BVar1 = IsRectEmpty(param_1);
+  return BVar1 != 0;
+}
+
+
+
+
+==== EnableCapsLock -> EnableCapsLock @ 180003c10 ====
+
+ulonglong EnableCapsLock(int param_1)
+
+{
+  ulonglong uVar1;
+  
+                    /* 0x3c10  15  EnableCapsLock */
+  uVar1 = FUN_180003730(&DAT_18001dc40,param_1 != 0);
+  return uVar1 & 0xff;
+}
+
+
+
+
+==== GetCapsLockState -> GetCapsLockState @ 180003b00 ====
+
+bool GetCapsLockState(void)
+
+{
+                    /* 0x3b00  4  GetCapsLockState */
+  return *(int *)(DAT_18001dc40 + 0x2c) != 0;
+}
+
+
+
+
+==== 0x1800036a0 -> FUN_1800036a0 @ 1800036a0 ====
+
+undefined8 FUN_1800036a0(longlong *param_1,char param_2,longlong param_3)
+
+{
+  longlong lVar1;
+  ushort uVar2;
+  undefined8 uVar3;
+  
+  *(undefined4 *)(*param_1 + 0x40) = 1;
+  if (param_2 == '\0') {
+    *(undefined8 *)(*param_1 + 0x10) = 0;
+    FUN_180001c70(param_1 + 3);
+    lVar1 = *param_1;
+    *(undefined4 *)(lVar1 + 0x40) = 0;
+    return CONCAT71((int7)((ulonglong)lVar1 >> 8),1);
+  }
+  if (param_3 != 0) {
+    *(longlong *)(*param_1 + 0x10) = param_3;
+  }
+  uVar3 = FUN_180001ab0(param_1 + 3,(HINSTANCE)param_1[1]);
+  if ((char)uVar3 == '\0') {
+    return uVar3;
+  }
+  uVar2 = GetKeyState(0x14);
+  *(uint *)(*param_1 + 0x2c) = uVar2 & 1;
+  lVar1 = *param_1;
+  *(undefined4 *)(lVar1 + 0x40) = 0;
+  return CONCAT71((int7)((ulonglong)lVar1 >> 8),1);
+}
+
+
+
+
+==== 0x180003730 -> FUN_180003730 @ 180003730 ====
+
+undefined8 FUN_180003730(longlong *param_1,byte param_2)
+
+{
+  int iVar1;
+  longlong lVar2;
+  ushort uVar3;
+  
+  iVar1 = *(int *)(*param_1 + 0x48);
+  if (param_2 == 0) {
+    uVar3 = GetKeyState(0x14);
+    if ((uVar3 & 1) != 0) {
+      keybd_event('\x14','E',1,0x87654321);
+      keybd_event('\x14','E',3,0x87654321);
+    }
+  }
+  lVar2 = *param_1;
+  *(uint *)(lVar2 + 0x48) = (uint)param_2;
+  return CONCAT71((int7)((ulonglong)lVar2 >> 8),iVar1 != 0);
+}
+
+
+
+
+==== 0x1800033a0 -> FUN_1800033a0 @ 1800033a0 ====
+
+HWND FUN_1800033a0(void)
+
+{
+  DWORD idAttachTo;
+  DWORD idAttach;
+  HWND pHVar1;
+  
+  idAttachTo = GetCurrentThreadId();
+  pHVar1 = GetForegroundWindow();
+  idAttach = GetWindowThreadProcessId(pHVar1,(LPDWORD)0x0);
+  if (idAttach != idAttachTo) {
+    AttachThreadInput(idAttach,idAttachTo,1);
+    pHVar1 = GetFocus();
+    AttachThreadInput(idAttach,idAttachTo,0);
+    return pHVar1;
+  }
+  return (HWND)0x0;
+}
+
+
+
+
+==== 0x180001d20 -> FUN_180001d20 @ 180001d20 ====
+
+undefined8 FUN_180001d20(longlong param_1,HINSTANCE param_2)
+
+{
+  BOOL BVar1;
+  DWORD DVar2;
+  HANDLE hHandle;
+  HHOOK pHVar3;
+  undefined8 uVar4;
+  
+  hHandle = CreateMutexW((LPSECURITY_ATTRIBUTES)0x0,0,L"GLOBAL_PSHook64.dll_Hook");
+  WaitForSingleObject(hHandle,2000);
+  if (*(HHOOK *)(param_1 + 0x18) != (HHOOK)0x0) {
+    BVar1 = UnhookWindowsHookEx(*(HHOOK *)(param_1 + 0x18));
+    if (BVar1 == 0) {
+      DVar2 = GetLastError();
+      if (DVar2 != 0x57c) goto LAB_180001d92;
+    }
+    pHVar3 = SetWindowsHookExW(0xd,FUN_1800020d0,param_2,0);
+    *(HHOOK *)(param_1 + 0x18) = pHVar3;
+  }
+LAB_180001d92:
+  if (*(HHOOK *)(param_1 + 0x20) != (HHOOK)0x0) {
+    BVar1 = UnhookWindowsHookEx(*(HHOOK *)(param_1 + 0x20));
+    if (BVar1 == 0) {
+      DVar2 = GetLastError();
+      if (DVar2 != 0x57c) goto LAB_180001dcd;
+    }
+    pHVar3 = SetWindowsHookExW(0xe,FUN_180001eb0,param_2,0);
+    *(HHOOK *)(param_1 + 0x20) = pHVar3;
+  }
+LAB_180001dcd:
+  if ((*(longlong *)(param_1 + 0x18) == 0) || (*(longlong *)(param_1 + 0x20) == 0)) {
+    uVar4 = 0;
+  }
+  else {
+    uVar4 = 1;
+  }
+  ReleaseMutex(hHandle);
+  return uVar4;
+}
+
+
+
+
+==== 0x1800020d0 -> FUN_1800020d0 @ 1800020d0 ====
+
+undefined8 FUN_1800020d0(int param_1,undefined8 param_2,uint *param_3)
+
+{
+  bool bVar1;
+  HWND pHVar2;
+  ulonglong uVar3;
+  undefined8 uVar4;
+  undefined *puVar5;
+  uint uVar6;
+  
+  if ((*(int *)(DAT_18001dc40 + 0x40) == 0) && (-1 < param_1)) {
+    if (DAT_18001dc80 == 0) {
+      DAT_18001dc80 = DAT_18001dc40;
+    }
+    puVar5 = &DAT_18001dc50;
+    if (DAT_18001dc88 != (undefined *)0x0) {
+      puVar5 = DAT_18001dc88;
+    }
+    DAT_18001dc88 = puVar5;
+    if (param_1 == 0) {
+      uVar4 = param_2;
+      pHVar2 = GetForegroundWindow();
+      uVar6 = (uint)uVar4;
+      bVar1 = FUN_180003420(pHVar2);
+      if (bVar1) {
+        uVar3 = FUN_180002dd0(&DAT_18001dc80,uVar6,param_3);
+        if ((char)uVar3 != '\0') {
+          return 1;
+        }
+      }
+    }
+  }
+                    /* WARNING: Could not recover jumptable at 0x00018000217e. Too many branches */
+                    /* WARNING: Treating indirect jump as call */
+  uVar4 = CallNextHookEx(0,param_1,param_2,param_3);
+  return uVar4;
+}
+
+
+
+
+==== 0x180001eb0 -> FUN_180001eb0 @ 180001eb0 ====
+
+void FUN_180001eb0(int param_1,undefined8 param_2,undefined8 param_3)
+
+{
+  HWND hWnd;
+  UINT Msg;
+  BOOL BVar1;
+  undefined *puVar2;
+  
+  Msg = DAT_18001dbb0;
+  if ((*(int *)(DAT_18001dc40 + 0x40) == 0) && (-1 < param_1)) {
+    if (DAT_18001dc80 == 0) {
+      DAT_18001dc80 = DAT_18001dc40;
+    }
+    puVar2 = &DAT_18001dc50;
+    if (DAT_18001dc88 != (undefined *)0x0) {
+      puVar2 = DAT_18001dc88;
+    }
+    hWnd = *(HWND *)(DAT_18001dc40 + 0x10);
+    DAT_18001dc88 = puVar2;
+    BVar1 = IsWindow(hWnd);
+    if (BVar1 != 0) {
+      PostMessageW(hWnd,Msg,(longlong)(int)param_2,0);
+    }
+                    /* WARNING: Could not recover jumptable at 0x000180001f69. Too many branches */
+                    /* WARNING: Treating indirect jump as call */
+    CallNextHookEx(0,param_1,param_2,param_3);
+    return;
+  }
+                    /* WARNING: Could not recover jumptable at 0x000180001f89. Too many branches */
+                    /* WARNING: Treating indirect jump as call */
+  CallNextHookEx(0,param_1,param_2,param_3);
+  return;
+}
+
+
+
+
+==== 0x180003420 -> FUN_180003420 @ 180003420 ====
+
+bool FUN_180003420(HWND param_1)
+
+{
+  bool bVar1;
+  HANDLE hObject;
+  DWORD local_res8 [2];
+  
+  local_res8[0] = 0;
+  if (param_1 == (HWND)0x0) {
+    local_res8[0] = GetCurrentProcessId();
+  }
+  else {
+    GetWindowThreadProcessId(param_1,local_res8);
+  }
+  hObject = OpenProcess(0x400,0,local_res8[0]);
+  if (hObject != (HANDLE)0x0) {
+    bVar1 = FUN_1800032c0(hObject);
+    CloseHandle(hObject);
+    return !bVar1;
+  }
+  return false;
+}
+
+
+
+
+==== 0x180002dd0 -> FUN_180002dd0 @ 180002dd0 ====
+
+ulonglong FUN_180002dd0(longlong *param_1,uint param_2,uint *param_3)
+
+{
+  HANDLE pvVar1;
+  undefined8 uVar2;
+  ulonglong uVar3;
+  byte bVar4;
+  uint local_res10 [2];
+  
+  bVar4 = ~(byte)(param_3[2] >> 7) & 1;
+  if (((param_3[2] & 0x10) != 0) && (*(longlong *)(param_3 + 4) == 0x87654321)) {
+    return 0x87654300;
+  }
+  local_res10[0] = param_2;
+  pvVar1 = GetCurrentProcess();
+  GetPriorityClass(pvVar1);
+  pvVar1 = GetCurrentProcess();
+  SetPriorityClass(pvVar1,0x20);
+  pvVar1 = GetCurrentThread();
+  GetThreadPriority(pvVar1);
+  pvVar1 = GetCurrentThread();
+  SetThreadPriority(pvVar1,0xf);
+  local_res10[0] = local_res10[0] & 0xffffff00;
+  uVar2 = FUN_180002ee0(param_1,(ulonglong)*param_3,bVar4,(char *)local_res10);
+  if ((char)uVar2 == '\0') {
+    uVar3 = FUN_1800028a0(param_1,*param_3,param_3[1],bVar4,(byte)param_3[2] & 1);
+    bVar4 = (byte)uVar3;
+  }
+  else {
+    bVar4 = (byte)local_res10[0];
+  }
+  pvVar1 = GetCurrentThread();
+  SetThreadPriority(pvVar1,0);
+  pvVar1 = GetCurrentProcess();
+  SetPriorityClass(pvVar1,0x20);
+  return (ulonglong)bVar4;
+}
+
+
+
+
+==== 0x180002ee0 -> FUN_180002ee0 @ 180002ee0 ====
+
+ulonglong FUN_180002ee0(longlong *param_1,ulonglong param_2,byte param_3,char *param_4)
+
+{
+  HWND hWnd;
+  UINT UVar1;
+  SHORT SVar2;
+  BOOL BVar3;
+  longlong lVar4;
+  longlong lVar5;
+  ulonglong uVar6;
+  longlong *plVar7;
+  undefined8 uVar8;
+  uint uVar9;
+  
+  UVar1 = DAT_18001dba8;
+  *param_4 = '\0';
+  plVar7 = param_1;
+  lVar4 = FUN_1800043a0((ULONG_PTR)param_1,UVar1,(ulonglong)param_3 << 0x10 | param_2 & 0xffff,0);
+  UVar1 = DAT_18001dbc0;
+  if (lVar4 < 1) {
+    lVar4 = *param_1;
+    uVar9 = (uint)param_2;
+    if ((*(int *)(lVar4 + 0x3c) != 0) && (uVar9 == 0x1b)) {
+      if (param_3 != 0) {
+        lVar5 = FUN_1800043a0((ULONG_PTR)plVar7,DAT_18001dbac,0,param_2 & 0xffffffff);
+        lVar4 = CONCAT71((int7)((ulonglong)lVar5 >> 8),0 < lVar5);
+        *param_4 = 0 < lVar5;
+      }
+      return CONCAT71((int7)((ulonglong)lVar4 >> 8),1);
+    }
+    if (uVar9 != 0x14) {
+      if (param_3 == 0) {
+        if (uVar9 == 0x91) {
+          if (*(int *)(lVar4 + 0x24) != 0) {
+            hWnd = *(HWND *)(DAT_18001dc40 + 0x10);
+            BVar3 = IsWindow(hWnd);
+            if (BVar3 != 0) {
+              PostMessageW(hWnd,UVar1,1,0);
+            }
+          }
+        }
+        else if (0x9f < uVar9) {
+          if (uVar9 < 0xa2) {
+            if ((((*(int *)(lVar4 + 0x20) != 0) && (SVar2 = GetKeyState(0x12), -1 < SVar2)) &&
+                (SVar2 = GetKeyState(0x11), -1 < SVar2)) && (SVar2 = GetKeyState(0x5c), -1 < SVar2))
+            {
+              uVar8 = 0x5b;
+              SVar2 = GetKeyState(0x5b);
+              if (-1 < SVar2) {
+                FUN_180002200(uVar8,(uVar9 != 0xa1) + 2);
+              }
+            }
+          }
+          else if (((uVar9 < 0xa4) && (*(int *)(lVar4 + 0x1c) != 0)) &&
+                  ((SVar2 = GetKeyState(0x12), -1 < SVar2 &&
+                   ((SVar2 = GetKeyState(0x10), -1 < SVar2 &&
+                    (SVar2 = GetKeyState(0x5c), -1 < SVar2)))))) {
+            uVar8 = 0x5b;
+            SVar2 = GetKeyState(0x5b);
+            if (-1 < SVar2) {
+              FUN_180002200(uVar8,(uint)(uVar9 != 0xa3));
+            }
+          }
+        }
+        *(undefined4 *)(*param_1 + 0x1c) = 0;
+        *(undefined4 *)(*param_1 + 0x20) = 0;
+        uVar6 = *param_1;
+      }
+      else {
+        if ((((uVar9 - 0xa2 < 2) && (SVar2 = GetKeyState(0x12), -1 < SVar2)) &&
+            (SVar2 = GetKeyState(0x10), -1 < SVar2)) &&
+           ((SVar2 = GetKeyState(0x5c), -1 < SVar2 && (SVar2 = GetKeyState(0x5b), -1 < SVar2)))) {
+          *(undefined4 *)(*param_1 + 0x1c) = 1;
+        }
+        else {
+          *(undefined4 *)(*param_1 + 0x1c) = 0;
+        }
+        if (((uVar9 - 0xa0 < 2) && (SVar2 = GetKeyState(0x12), -1 < SVar2)) &&
+           ((SVar2 = GetKeyState(0x11), -1 < SVar2 &&
+            ((SVar2 = GetKeyState(0x5c), -1 < SVar2 && (SVar2 = GetKeyState(0x5b), -1 < SVar2))))))
+        {
+          *(undefined4 *)(*param_1 + 0x20) = 1;
+        }
+        else {
+          *(undefined4 *)(*param_1 + 0x20) = 0;
+        }
+        uVar6 = *param_1;
+        if (uVar9 == 0x91) {
+          *(undefined4 *)(uVar6 + 0x24) = 1;
+          goto LAB_1800031a9;
+        }
+      }
+      *(undefined4 *)(uVar6 + 0x24) = 0;
+LAB_1800031a9:
+      return uVar6 & 0xffffffffffffff00;
+    }
+    if (param_3 != 0) {
+      lVar5 = FUN_1800043a0((ULONG_PTR)plVar7,DAT_18001dbac,0,param_2 & 0xffffffff);
+      lVar4 = CONCAT71((int7)((ulonglong)lVar5 >> 8),0 < lVar5);
+      *param_4 = 0 < lVar5;
+    }
+    if ((*param_4 != '\0') || (lVar4 = *param_1, *(int *)(lVar4 + 0x48) != 0)) goto LAB_180002f8b;
+  }
+  *param_4 = '\x01';
+LAB_180002f8b:
+  return CONCAT71((int7)((ulonglong)lVar4 >> 8),1);
+}
+
+
+
+
+==== 0x1800028a0 -> FUN_1800028a0 @ 1800028a0 ====
+
+/* WARNING: Type propagation algorithm not settling */
+
+ulonglong FUN_1800028a0(longlong *param_1,uint param_2,uint param_3,char param_4,byte param_5)
+
+{
+  byte bVar1;
+  ushort uVar2;
+  SHORT SVar3;
+  short sVar4;
+  SHORT SVar5;
+  DWORD idThread;
+  ulonglong in_RAX;
+  ulonglong uVar6;
+  HWND hWnd;
+  ulonglong uVar7;
+  undefined6 extraout_var;
+  undefined6 extraout_var_00;
+  undefined6 extraout_var_01;
+  undefined6 extraout_var_02;
+  longlong lVar8;
+  HKL pHVar9;
+  ULONG_PTR UVar10;
+  int iVar11;
+  WPARAM WVar12;
+  uint uVar13;
+  
+  WVar12 = (WPARAM)(int)param_2;
+  if ((param_4 == '\0') || ((char)param_2 == -1)) {
+LAB_1800028d2:
+    return in_RAX & 0xffffffffffffff00;
+  }
+  if (param_2 == 0x14) {
+    uVar2 = GetKeyState(0x14);
+    in_RAX = 0;
+    *(uint *)(*param_1 + 0x2c) = uVar2 & 1;
+    goto LAB_1800028d2;
+  }
+  SVar3 = GetKeyState(0x10);
+  uVar2 = GetKeyState(0x14);
+  bVar1 = (char)(uVar2 & 1) * '\x02';
+  uVar7 = (ulonglong)bVar1;
+  uVar13 = (((uint)param_5 << 8 | param_3 & 0xff) << 8 | (uint)bVar1 | (uint)(SVar3 < 0)) << 8 |
+           param_2 & 0xff;
+  if (((param_2 == 0x1b) || (param_2 - 0x70 < 0x18)) || (param_2 - 0x21 < 0xe)) {
+LAB_18000296a:
+    FUN_180002780(param_1);
+    uVar6 = (ulonglong)(param_2 - 0x25);
+    if ((param_2 - 0x25 < 4) || (param_2 == 0x2e)) {
+      uVar6 = FUN_1800043a0((ULONG_PTR)param_1,DAT_18001dbb8,WVar12,(longlong)(int)uVar13);
+    }
+LAB_180002990:
+    return uVar6 & 0xffffffffffffff00;
+  }
+  if (param_2 == 0x56) {
+    uVar7 = 0x11;
+    sVar4 = GetKeyState(0x11);
+joined_r0x0001800029bd:
+    if (sVar4 < 0) goto LAB_18000296a;
+  }
+  else {
+    if (param_2 == 0x58) {
+      uVar7 = 0x11;
+      sVar4 = GetKeyState(0x11);
+      goto joined_r0x0001800029bd;
+    }
+    if (param_2 == 0x5a) {
+      uVar7 = 0x11;
+      sVar4 = GetKeyState(0x11);
+      goto joined_r0x0001800029bd;
+    }
+    if (param_2 == 0x59) {
+      uVar7 = 0x11;
+      sVar4 = GetKeyState(0x11);
+      goto joined_r0x0001800029bd;
+    }
+    if (param_2 == 0x41) {
+      uVar7 = 0x11;
+      sVar4 = GetKeyState(0x11);
+      goto joined_r0x0001800029bd;
+    }
+    uVar6 = (ulonglong)(param_2 - 0x10);
+    if (((param_2 - 0x10 < 4) || (uVar6 = (ulonglong)(param_2 - 0xa0), param_2 - 0xa0 < 6)) ||
+       ((uVar6 = (ulonglong)(param_2 - 0x5b), param_2 - 0x5b < 0x37 &&
+        ((0x60000000000007U >> (uVar6 & 0x3f) & 1) != 0)))) goto LAB_180002990;
+  }
+  hWnd = (HWND)FUN_1800034a0();
+  if (param_2 == 8) {
+    UVar10 = 0x11;
+    SVar3 = GetKeyState(0x11);
+    if (-1 < SVar3) {
+      FUN_1800043a0(UVar10,DAT_18001dbb4,(WPARAM)hWnd,(longlong)(int)uVar13);
+      uVar7 = FUN_1800026a0(param_1,8);
+      return uVar7 & 0xffffffffffffff00;
+    }
+    uVar6 = FUN_180002780(param_1);
+  }
+  else {
+    if (param_2 == 0xd) {
+LAB_180002ab3:
+      uVar6 = (ulonglong)(int)uVar13;
+      lVar8 = FUN_1800043a0(uVar7,DAT_18001dbb4,(WPARAM)hWnd,uVar6);
+      uVar7 = (ulonglong)(lVar8 != 0);
+      if (*(int *)(*param_1 + 0x28) == 0) {
+        return uVar7;
+      }
+      idThread = GetWindowThreadProcessId(hWnd,(LPDWORD)0x0);
+      pHVar9 = GetKeyboardLayout(idThread);
+      if ((param_2 - 0xba < 0x26) &&
+         ((((((sVar4 = (short)((ulonglong)pHVar9 >> 0x10), sVar4 == -0xfff || (sVar4 == 0x80a)) ||
+             (sVar4 == 0x407)) || ((sVar4 == -0xf3d || (sVar4 == 0x80c)))) ||
+           ((sVar4 == -0xf33 || ((sVar4 == -0xfe2 || (sVar4 == 0x40c0)))))) || (sVar4 == 0x40a)))) {
+        if (DAT_18001dca8 == 0) {
+          DAT_18001dca8 = 1;
+          return uVar7;
+        }
+        DAT_18001dca8 = 0;
+      }
+      else if (DAT_18001dca8 != 0) {
+        DAT_18001dca8 = DAT_18001dca8 + -1;
+        if (((uVar2 & 1) == (ushort)(SVar3 < 0)) && ((ushort)((short)param_2 - 0x41U) < 0x1a)) {
+          WVar12 = (WPARAM)(ushort)((short)param_2 + 0x20);
+        }
+        if ((short)WVar12 == 0) {
+          return uVar7;
+        }
+        FUN_1800026a0(param_1,(int)(short)WVar12);
+        return uVar7;
+      }
+      uVar6 = FUN_1800027c0(param_1,param_2,param_3,uVar6);
+      if ((short)uVar6 == -2) {
+        return uVar6 & 0xffffffffffffff00;
+      }
+      iVar11 = (int)(short)uVar6;
+      if (lVar8 != 0) {
+        FUN_1800026a0(param_1,iVar11);
+        iVar11 = 0x1c;
+      }
+      FUN_1800026a0(param_1,iVar11);
+      return uVar7;
+    }
+    SVar5 = GetKeyState(0x12);
+    uVar6 = CONCAT62(extraout_var,SVar5);
+    if (-1 < SVar5) {
+      SVar5 = GetKeyState(0x11);
+      uVar6 = CONCAT62(extraout_var_00,SVar5);
+      if (-1 < SVar5) {
+        SVar5 = GetKeyState(0x5c);
+        uVar6 = CONCAT62(extraout_var_01,SVar5);
+        if (-1 < SVar5) {
+          uVar7 = 0x5b;
+          SVar5 = GetKeyState(0x5b);
+          uVar6 = CONCAT62(extraout_var_02,SVar5);
+          if (-1 < SVar5) goto LAB_180002ab3;
+        }
+      }
+    }
+  }
+  return uVar6 & 0xffffffffffffff00;
+}
+
+
+
+
+==== 0x1800032c0 -> FUN_1800032c0 @ 1800032c0 ====
+
+bool FUN_1800032c0(undefined8 param_1)
+
+{
+  HMODULE pHVar1;
+  INT_PTR IVar2;
+  FARPROC pFVar3;
+  int local_res10 [6];
+  _union_552 local_38 [12];
+  
+  local_res10[0] = 0;
+  if (DAT_18001dcb8 == '\0') {
+    pHVar1 = GetModuleHandleW(L"kernel32.dll");
+    DAT_18001dcb0 = GetProcAddress(pHVar1,"IsWow64Process");
+    DAT_18001dcb8 = '\x01';
+  }
+  if ((DAT_18001dcb0 != (FARPROC)0x0) &&
+     (IVar2 = (*DAT_18001dcb0)(param_1,local_res10), (int)IVar2 != 0)) {
+    return local_res10[0] != 0;
+  }
+  if (DAT_18001c8e0 == 0xffffffff) {
+    pHVar1 = GetModuleHandleW(L"kernel32.dll");
+    pFVar3 = GetProcAddress(pHVar1,"GetNativeSystemInfo");
+    if (pFVar3 == (FARPROC)0x0) {
+      GetSystemInfo((LPSYSTEM_INFO)&local_38[0].s);
+    }
+    else {
+      (*pFVar3)();
+    }
+    DAT_18001c8e0 = (uint)(local_38[0].s.wProcessorArchitecture == 0);
+  }
+  return DAT_18001c8e0 != 1;
+}
+
+
+
+
+==== 0x1800043a0 -> FUN_1800043a0 @ 1800043a0 ====
+
+undefined8 FUN_1800043a0(ULONG_PTR param_1,UINT param_2,WPARAM param_3,LPARAM param_4)
+
+{
+  HWND hWnd;
+  BOOL BVar1;
+  LRESULT LVar2;
+  longlong lVar3;
+  ULONG_PTR local_res8;
+  
+  hWnd = *(HWND *)(DAT_18001dc40 + 0x10);
+  local_res8 = param_1;
+  BVar1 = IsWindow(hWnd);
+  if (BVar1 != 0) {
+    local_res8 = 0;
+    lVar3 = *(longlong *)(DAT_18001dc40 + 0x60);
+    if (lVar3 == 0) {
+      lVar3 = 2000;
+    }
+    LVar2 = SendMessageTimeoutW(hWnd,param_2,param_3,param_4,0,(UINT)lVar3,&local_res8);
+    if (LVar2 != 0) {
+      return local_res8;
+    }
+  }
+  return 0;
+}
+
+
+
+
+==== 0x1800034a0 -> FUN_1800034a0 @ 1800034a0 ====
+
+void FUN_1800034a0(void)
+
+{
+  DWORD idThread;
+  BOOL BVar1;
+  HWND pHVar2;
+  tagGUITHREADINFO local_58;
+  
+  pHVar2 = GetForegroundWindow();
+  idThread = GetWindowThreadProcessId(pHVar2,(LPDWORD)0x0);
+  local_58.cbSize = 0x48;
+  BVar1 = GetGUIThreadInfo(idThread,&local_58);
+  if (BVar1 == 1) {
+    if (local_58.hwndCaret != (HWND)0x0) {
+      local_58.hwndFocus = local_58.hwndCaret;
+    }
+    if (local_58.hwndFocus != (HWND)0x0) {
+      return;
+    }
+  }
+  pHVar2 = FUN_1800033a0();
+  if ((pHVar2 == (HWND)0x0) && (local_58.hwndActive == (HWND)0x0)) {
+    GetForegroundWindow();
+  }
+  return;
+}
+
+
+
+
+==== 0x180002780 -> FUN_180002780 @ 180002780 ====
+
+void FUN_180002780(longlong *param_1)
+
+{
+  *(undefined4 *)(*param_1 + 0x44) = 0;
+  FUN_1800043a0((ULONG_PTR)param_1,DAT_18001dbc8,0,0);
+  FUN_1800026a0(param_1,10);
+  return;
+}
+
+
+
+
+==== 0x1800027c0 -> FUN_1800027c0 @ 1800027c0 ====
+
+ulonglong FUN_1800027c0(longlong *param_1,UINT param_2,UINT param_3,ulonglong param_4)
+
+{
+  SHORT SVar1;
+  int iVar2;
+  HKL dwhkl;
+  PBYTE lpKeyState;
+  ulonglong local_res20;
+  BYTE local_148 [304];
+  
+  lpKeyState = local_148;
+  local_res20 = param_4;
+  GetKeyboardState(lpKeyState);
+  dwhkl = (HKL)FUN_1800043a0((ULONG_PTR)lpKeyState,DAT_18001dbbc,0,0);
+  local_res20 = local_res20 & 0xffffffffffff0000;
+  SVar1 = GetKeyState(0x12);
+  if (-1 < SVar1) {
+    SVar1 = GetKeyState(0x11);
+    if (((SVar1 < 0) && (SVar1 = GetKeyState(0x10), SVar1 < 0)) && (param_2 == 0x20)) {
+      FUN_180002780(param_1);
+    }
+    else {
+      iVar2 = ToAsciiEx(param_2,param_3,local_148,(LPWORD)&local_res20,0,dwhkl);
+      if (iVar2 == 1) {
+        return local_res20 & 0xffff;
+      }
+    }
+  }
+  return 0xfffffffe;
+}
+
+
+
+
+==== 0x1800026a0 -> FUN_1800026a0 @ 1800026a0 ====
+
+void FUN_1800026a0(longlong *param_1,int param_2)
+
+{
+  HWND hWnd;
+  UINT Msg;
+  DWORD idThread;
+  BOOL BVar1;
+  HWND pHVar2;
+  tagGUITHREADINFO local_58;
+  
+  if (*(int *)(*param_1 + 0x28) == 0) {
+    return;
+  }
+  pHVar2 = GetForegroundWindow();
+  idThread = GetWindowThreadProcessId(pHVar2,(LPDWORD)0x0);
+  local_58.cbSize = 0x48;
+  BVar1 = GetGUIThreadInfo(idThread,&local_58);
+  if (BVar1 == 1) {
+    if (local_58.hwndCaret != (HWND)0x0) {
+      local_58.hwndFocus = local_58.hwndCaret;
+    }
+    pHVar2 = local_58.hwndFocus;
+    if (local_58.hwndFocus != (HWND)0x0) goto LAB_180002725;
+  }
+  pHVar2 = FUN_1800033a0();
+  if ((pHVar2 == (HWND)0x0) && (pHVar2 = local_58.hwndActive, local_58.hwndActive == (HWND)0x0)) {
+    pHVar2 = GetForegroundWindow();
+  }
+LAB_180002725:
+  Msg = DAT_18001dbcc;
+  hWnd = *(HWND *)(DAT_18001dc40 + 0x10);
+  BVar1 = IsWindow(hWnd);
+  if (BVar1 != 0) {
+    PostMessageW(hWnd,Msg,(WPARAM)pHVar2,(longlong)param_2);
+  }
+  return;
+}
+
+
+
+
+==== 0x180002200 -> FUN_180002200 @ 180002200 ====
+
+ulonglong FUN_180002200(undefined8 param_1,int param_2)
+
+{
+  HWND hWnd;
+  UINT Msg;
+  BOOL BVar1;
+  undefined4 extraout_var;
+  undefined4 extraout_var_00;
+  
+  Msg = DAT_18001dbc4;
+  hWnd = *(HWND *)(DAT_18001dc40 + 0x10);
+  BVar1 = IsWindow(hWnd);
+  if (BVar1 != 0) {
+    BVar1 = PostMessageW(hWnd,Msg,(longlong)param_2,0);
+    return CONCAT71((int7)(CONCAT44(extraout_var_00,BVar1) >> 8),BVar1 != 0);
+  }
+  return CONCAT44(extraout_var,BVar1) & 0xffffffffffffff00;
+}
+
+
+
+

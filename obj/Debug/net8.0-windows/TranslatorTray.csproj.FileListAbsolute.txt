@@ -21,3 +21,10 @@ C:\.projects\translator\obj\Debug\net8.0-windows\ref\TranslatorTray.dll
 C:\.projects\translator\bin\Debug\net8.0-windows\src\images\App.ico
 C:\.projects\translator\bin\Debug\net8.0-windows\src\images\Frame 21.png
 C:\.projects\translator\bin\Debug\net8.0-windows\src\sounds\soft-soft-keystroke.wav
+C:\.projects\translator\obj\Debug\net8.0-windows\TranslatorTray.csproj.AssemblyReference.cache
+C:\.projects\translator\bin\Debug\net8.0-windows\Data\hunspell\en_US.aff
+C:\.projects\translator\bin\Debug\net8.0-windows\Data\hunspell\en_US.dic
+C:\.projects\translator\bin\Debug\net8.0-windows\Data\hunspell\ru_RU.aff
+C:\.projects\translator\bin\Debug\net8.0-windows\Data\hunspell\ru_RU.dic
+C:\.projects\translator\bin\Debug\net8.0-windows\WeCantSpell.Hunspell.dll
+C:\.projects\translator\obj\Debug\net8.0-windows\Translat.307ABA4F.Up2Date

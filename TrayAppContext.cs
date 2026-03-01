@@ -17,6 +17,8 @@ public sealed class TrayAppContext : ApplicationContext
     private readonly SettingsStore _settingsStore;
     private readonly KeyboardLayoutService _layoutService;
     private readonly LexiconService _lexiconService;
+    private readonly HunspellDictionaryService _hunspellDictionaryService;
+    private readonly WindowsSpellCheckerService _windowsSpellChecker;
     private readonly PuntoDataService _puntoDataService;
     private readonly TextTransformService _transformService;
     private readonly SpellCorrectionService _spellCorrectionService;
@@ -41,9 +43,11 @@ public sealed class TrayAppContext : ApplicationContext
 
         _layoutService = new KeyboardLayoutService();
         _lexiconService = new LexiconService(AppContext.BaseDirectory);
+        _hunspellDictionaryService = new HunspellDictionaryService(AppContext.BaseDirectory);
+        _windowsSpellChecker = new WindowsSpellCheckerService();
         _puntoDataService = new PuntoDataService(AppContext.BaseDirectory);
         _transformService = new TextTransformService(_lexiconService, _puntoDataService);
-        _spellCorrectionService = new SpellCorrectionService(_lexiconService);
+        _spellCorrectionService = new SpellCorrectionService(_lexiconService, _hunspellDictionaryService, _windowsSpellChecker);
         _toneService = new ToneService(AppContext.BaseDirectory);
         _inputSimulator = new InputSimulator();
         _clipboardActions = new ClipboardTextActions(_inputSimulator, _transformService);
@@ -326,6 +330,7 @@ public sealed class TrayAppContext : ApplicationContext
         _trayIcon.Dispose();
         _hook.Dispose();
         _hotkeys.Dispose();
+        _windowsSpellChecker.Dispose();
         base.ExitThreadCore();
     }
 

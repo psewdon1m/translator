@@ -10,11 +10,14 @@
     <ApplicationIcon>src\images\App.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="Data\*.*">
+    <Content Include="Data\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="src\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="WeCantSpell.Hunspell" Version="7.0.1" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-namespace TranslatorTray.Services;
+﻿namespace TranslatorTray.Services;
 
 public sealed class LexiconService
 {
@@ -33,6 +33,46 @@ public sealed class LexiconService
     public int EnglishCount => _englishWords.Count;
     public int RussianCount => _russianWords.Count;
 
+    public bool IsSafeSuggestion(LanguageScript language, string source, string candidate, SuggestionMode mode)
+    {
+        var normalizedSource = Normalize(source);
+        var normalizedCandidate = Normalize(candidate);
+        if (normalizedSource.Length < 4 || normalizedSource.Length > 16)
+        {
+            return false;
+        }
+
+        var lengthDelta = Math.Abs(normalizedSource.Length - normalizedCandidate.Length);
+        if (lengthDelta > 0 && mode != SuggestionMode.Direct)
+        {
+            return false;
+        }
+
+        if (lengthDelta > 1)
+        {
+            return false;
+        }
+
+        if (!MatchesLanguage(language, normalizedCandidate))
+        {
+            return false;
+        }
+
+        if (!SharesSafeShape(normalizedSource, normalizedCandidate, mode))
+        {
+            return false;
+        }
+
+        var minMatchingPositions = (Math.Min(normalizedSource.Length, normalizedCandidate.Length) + 1) / 2;
+        if (CountMatchingPositions(normalizedSource, normalizedCandidate) < minMatchingPositions)
+        {
+            return false;
+        }
+
+        var maxDistance = Math.Max(1, normalizedSource.Length / 2);
+        return BoundedEditDistanceOrTransposition(normalizedSource, normalizedCandidate, maxDistance) >= 0;
+    }
+
     public bool TrySuggest(LanguageScript language, string word, out string suggestion, SuggestionMode mode = SuggestionMode.Direct)
     {
         suggestion = word;
@@ -64,23 +104,17 @@ public sealed class LexiconService
         var bestDistance = int.MaxValue;
         var bestMatchingPositions = -1;
         var maxDistance = Math.Max(1, normalized.Length / 2);
-        var minMatchingPositions = (normalized.Length + 1) / 2;
         var len = normalized.Length;
         if (buckets.TryGetValue(len, out var candidates))
         {
             foreach (var candidate in candidates)
             {
-                if (!SharesSafeShape(normalized, candidate, mode))
+                if (!IsSafeSuggestion(language, normalized, candidate, mode))
                 {
                     continue;
                 }
 
                 var matchingPositions = CountMatchingPositions(normalized, candidate);
-                if (matchingPositions < minMatchingPositions)
-                {
-                    continue;
-                }
-
                 var distance = BoundedEditDistanceOrTransposition(normalized, candidate, maxDistance);
                 if (distance < 0)
                 {
@@ -128,6 +162,7 @@ public sealed class LexiconService
                 bucket = [];
                 byLength[word.Length] = bucket;
             }
+
             bucket.Add(word);
         }
 
@@ -141,7 +176,16 @@ public sealed class LexiconService
             return false;
         }
 
-        if (source.Length >= 4 && candidate.Length >= 4 && source[1] != candidate[1])
+        var startsWithEarlySwap =
+            source.Length >= 3 &&
+            candidate.Length >= 3 &&
+            source[1] == candidate[2] &&
+            source[2] == candidate[1];
+
+        if (source.Length >= 4 &&
+            candidate.Length >= 4 &&
+            source[1] != candidate[1] &&
+            !startsWithEarlySwap)
         {
             return false;
         }
@@ -252,6 +296,13 @@ public sealed class LexiconService
             .ToArray();
         return new string(chars);
     }
+
+    private static bool MatchesLanguage(LanguageScript language, string word) => language switch
+    {
+        LanguageScript.English => IsEnglishWord(word),
+        LanguageScript.Russian => IsRussianWord(word),
+        _ => false
+    };
 
     private static bool IsEnglishWord(string word) => word.All(c => (c >= 'a' && c <= 'z') || c == '\'' || c == '-');
     private static bool IsRussianWord(string word) => word.All(c => (c >= 'а' && c <= 'я') || c == 'ё' || c == '-');

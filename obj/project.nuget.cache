@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "dFzqta/tpRA=",
+  "dgSpecHash": "vwcVl3ihu5g=",
   "success": true,
   "projectFilePath": "C:\\.projects\\translator\\TranslatorTray.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\pc\\.nuget\\packages\\wecantspell.hunspell\\7.0.1\\wecantspell.hunspell.7.0.1.nupkg.sha512"
+  ],
   "logs": []
 }

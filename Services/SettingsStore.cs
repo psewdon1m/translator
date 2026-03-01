@@ -6,7 +6,7 @@ namespace TranslatorTray.Services;
 
 public sealed class SettingsStore
 {
-    private const int CurrentSettingsVersion = 6;
+    private const int CurrentSettingsVersion = 7;
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         WriteIndented = true
@@ -114,6 +114,12 @@ public sealed class SettingsStore
             settings.AutoToggleSoundId = MapLegacySoundPreset(settings.AutoToggleSound, ToneService.BuiltinAutoToggleId);
             settings.TextActionSoundId = MapLegacySoundPreset(settings.TextActionSound, ToneService.BuiltinTextActionId);
             settings.SettingsVersion = 6;
+        }
+
+        if (settings.SettingsVersion < 7)
+        {
+            settings.AutoCorrectEnabled = true;
+            settings.SettingsVersion = 7;
         }
 
         // Keep requested defaults for MVP if user still has old modifier-only captures.

@@ -19,6 +19,7 @@ public sealed class TrayAppContext : ApplicationContext
     private readonly LexiconService _lexiconService;
     private readonly PuntoDataService _puntoDataService;
     private readonly TextTransformService _transformService;
+    private readonly SpellCorrectionService _spellCorrectionService;
     private readonly ToneService _toneService;
     private readonly InputSimulator _inputSimulator;
     private readonly ClipboardTextActions _clipboardActions;
@@ -42,11 +43,12 @@ public sealed class TrayAppContext : ApplicationContext
         _lexiconService = new LexiconService(AppContext.BaseDirectory);
         _puntoDataService = new PuntoDataService(AppContext.BaseDirectory);
         _transformService = new TextTransformService(_lexiconService, _puntoDataService);
+        _spellCorrectionService = new SpellCorrectionService(_lexiconService);
         _toneService = new ToneService(AppContext.BaseDirectory);
         _inputSimulator = new InputSimulator();
         _clipboardActions = new ClipboardTextActions(_inputSimulator, _transformService);
         _hotkeys = new GlobalHotkeyWindow();
-        _hook = new KeyboardHookService(_layoutService, _transformService, _inputSimulator, () => _settings);
+        _hook = new KeyboardHookService(_layoutService, _transformService, _spellCorrectionService, _inputSimulator, () => _settings);
         _hook.Status += message =>
         {
             _uiContext.Post(_ =>
@@ -55,6 +57,10 @@ public sealed class TrayAppContext : ApplicationContext
                     message.StartsWith("Auto converted", StringComparison.Ordinal))
                 {
                     PlayLayoutSwitchSound();
+                }
+                else if (message.StartsWith("Auto corrected", StringComparison.Ordinal))
+                {
+                    PlayTextActionSound();
                 }
 
                 OnStatus(message, showBalloon: false);
@@ -170,8 +176,16 @@ public sealed class TrayAppContext : ApplicationContext
             }
             if (ok)
             {
-                PlayLayoutSwitchSound();
-                OnStatus($"Auto converted: {request.SourceWord} -> {request.ConvertedWord}", showBalloon: false);
+                if (request.Kind == KeyboardHookService.AutoReplaceKind.LayoutConversion)
+                {
+                    PlayLayoutSwitchSound();
+                    OnStatus($"Auto converted: {request.SourceWord} -> {request.ConvertedWord}", showBalloon: false);
+                }
+                else
+                {
+                    PlayTextActionSound();
+                    OnStatus($"Auto corrected: {request.SourceWord} -> {request.ConvertedWord}", showBalloon: false);
+                }
             }
             else
             {
@@ -205,6 +219,7 @@ public sealed class TrayAppContext : ApplicationContext
         return new AppSettings
         {
             AutoSwitchEnabled = source.AutoSwitchEnabled,
+            AutoCorrectEnabled = source.AutoCorrectEnabled,
             SuspendAutoSwitchUntilDelimiterAfterManualSwitch = source.SuspendAutoSwitchUntilDelimiterAfterManualSwitch,
             OneKeySwitchRuEnOnly = source.OneKeySwitchRuEnOnly,
             StartWithWindows = source.StartWithWindows,

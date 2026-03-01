@@ -5,8 +5,9 @@ namespace TranslatorTray.Models;
 
 public sealed class AppSettings
 {
-    public int SettingsVersion { get; set; } = 6;
+    public int SettingsVersion { get; set; } = 7;
     public bool AutoSwitchEnabled { get; set; } = true;
+    public bool AutoCorrectEnabled { get; set; } = true;
     public bool SuspendAutoSwitchUntilDelimiterAfterManualSwitch { get; set; } = true;
     public bool OneKeySwitchRuEnOnly { get; set; } = true;
     public bool StartWithWindows { get; set; } = false;
@@ -31,7 +32,7 @@ public sealed class AppSettings
     public HashSet<string> ProtectedWords { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
     [JsonIgnore]
-    public int Version => 6;
+    public int Version => 7;
 }
 
 public enum SoundPreset

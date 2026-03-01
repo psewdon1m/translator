@@ -107,7 +107,7 @@ public sealed class TextTransformService
 
         if (_puntoData is not null && _puntoData.TryWholeWordMapping(word, sourceScript, out var mappedByDictionary))
         {
-            converted = ApplySourceCasePattern(word, mappedByDictionary);
+            converted = ApplyCasePattern(word, mappedByDictionary);
             target = sourceScript == LanguageScript.English ? LanguageScript.Russian : LanguageScript.English;
             return converted != word;
         }
@@ -182,6 +182,13 @@ public sealed class TextTransformService
         return en >= ru ? LanguageScript.English : LanguageScript.Russian;
     }
 
+    public static int GetPlausibilityScore(LanguageScript language, string text) => language switch
+    {
+        LanguageScript.English => ScoreEnglishLike(text),
+        LanguageScript.Russian => ScoreRussianLike(text),
+        _ => 0
+    };
+
     private static char ConvertChar(char ch, out bool changed)
     {
         var isUpper = char.IsLetter(ch) && char.IsUpper(ch);
@@ -203,7 +210,7 @@ public sealed class TextTransformService
         return ch;
     }
 
-    private static string ApplySourceCasePattern(string source, string target)
+    public static string ApplyCasePattern(string source, string target)
     {
         if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target))
         {

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TranslatorTray")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+65082a26ff8acb9d4d52283f434148c414b64eac")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+828f1bd8c83776b292bbb4099370d72b441a5fd7")]
 [assembly: System.Reflection.AssemblyProductAttribute("TranslatorTray")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TranslatorTray")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

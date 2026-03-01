@@ -11,6 +11,7 @@ public sealed class SettingsForm : Form
     private readonly ToneService _toneService;
     private readonly IReadOnlyList<SoundOption> _soundOptions;
     private readonly CheckBox _autoSwitch;
+    private readonly CheckBox _autoCorrect;
     private readonly CheckBox _suspendAfterManual;
     private readonly CheckBox _ruEnOnly;
     private readonly CheckBox _playLayoutSound;
@@ -58,6 +59,7 @@ public sealed class SettingsForm : Form
         Controls.Add(panel);
 
         _autoSwitch = AddCheck(panel, "Auto switch after delimiter", _settings.AutoSwitchEnabled);
+        _autoCorrect = AddCheck(panel, "Offline autocorrect spelling (safe mode)", _settings.AutoCorrectEnabled);
         _suspendAfterManual = AddCheck(panel, "Suspend auto until delimiter after manual switch", _settings.SuspendAutoSwitchUntilDelimiterAfterManualSwitch);
         _ruEnOnly = AddCheck(panel, "One-key switch only RU/EN", _settings.OneKeySwitchRuEnOnly);
         _playLayoutSound = AddCheck(panel, "Play sound on layout switch", _settings.PlaySoundOnLayoutSwitch);
@@ -291,6 +293,7 @@ public sealed class SettingsForm : Form
     private void ApplyToSettings()
     {
         _settings.AutoSwitchEnabled = _autoSwitch.Checked;
+        _settings.AutoCorrectEnabled = _autoCorrect.Checked;
         _settings.SuspendAutoSwitchUntilDelimiterAfterManualSwitch = _suspendAfterManual.Checked;
         _settings.OneKeySwitchRuEnOnly = _ruEnOnly.Checked;
         _settings.PlaySoundOnLayoutSwitch = _playLayoutSound.Checked;

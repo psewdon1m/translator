@@ -9,6 +9,7 @@ public sealed class KeyboardHookService : IDisposable
 {
     private readonly KeyboardLayoutService _layoutService;
     private readonly TextTransformService _transformService;
+    private readonly SpellCorrectionService _spellCorrectionService;
     private readonly InputSimulator _input;
     private readonly Func<AppSettings> _settingsProvider;
     private readonly NativeMethods.LowLevelKeyboardProc _proc;
@@ -50,11 +51,13 @@ public sealed class KeyboardHookService : IDisposable
     public KeyboardHookService(
         KeyboardLayoutService layoutService,
         TextTransformService transformService,
+        SpellCorrectionService spellCorrectionService,
         InputSimulator input,
         Func<AppSettings> settingsProvider)
     {
         _layoutService = layoutService;
         _transformService = transformService;
+        _spellCorrectionService = spellCorrectionService;
         _input = input;
         _settingsProvider = settingsProvider;
         _proc = HookCallback;
@@ -334,23 +337,45 @@ public sealed class KeyboardHookService : IDisposable
                 return;
             }
 
-            if (!settings.AutoSwitchEnabled || !IsAutoConvertTriggerDelimiter(c) || string.IsNullOrEmpty(word))
+            if (!IsAutoConvertTriggerDelimiter(c) || string.IsNullOrEmpty(word))
             {
                 return;
             }
 
-            if (!_transformService.TryAutoConvertWord(word, settings.ProtectedWords, out var converted, out var target))
+            if (settings.AutoSwitchEnabled &&
+                _transformService.TryAutoConvertWord(word, settings.ProtectedWords, out var converted, out var target))
+            {
+                if (settings.AutoCorrectEnabled &&
+                    _spellCorrectionService.TryAutoCorrectWord(converted, target, out var correctedAfterLayout))
+                {
+                    converted = correctedAfterLayout;
+                }
+
+                _pendingAutoReplacement = new PendingAutoReplacement(
+                    word,
+                    converted,
+                    c,
+                    data.vkCode,
+                    target,
+                    settings.OneKeySwitchRuEnOnly,
+                    AutoReplaceKind.LayoutConversion);
+                return;
+            }
+
+            if (!settings.AutoCorrectEnabled ||
+                !_spellCorrectionService.TryAutoCorrectWord(word, settings.ProtectedWords, out var corrected, out var correctedLanguage))
             {
                 return;
             }
 
             _pendingAutoReplacement = new PendingAutoReplacement(
                 word,
-                converted,
+                corrected,
                 c,
                 data.vkCode,
-                target,
-                settings.OneKeySwitchRuEnOnly);
+                correctedLanguage,
+                false,
+                AutoReplaceKind.SpellCorrection);
             return;
         }
 
@@ -378,7 +403,8 @@ public sealed class KeyboardHookService : IDisposable
             pending.ConvertedWord,
             pending.Delimiter,
             pending.Target,
-            pending.SwitchRuEnOnly));
+            pending.SwitchRuEnOnly,
+            pending.Kind));
     }
 
     private void CancelOneKeyCandidate()
@@ -544,12 +570,20 @@ public sealed class KeyboardHookService : IDisposable
         char Delimiter,
         uint DelimiterVkCode,
         LanguageScript Target,
-        bool SwitchRuEnOnly);
+        bool SwitchRuEnOnly,
+        AutoReplaceKind Kind);
 
     public sealed record AutoReplaceRequest(
         string SourceWord,
         string ConvertedWord,
         char Delimiter,
         LanguageScript Target,
-        bool SwitchRuEnOnly);
+        bool SwitchRuEnOnly,
+        AutoReplaceKind Kind);
+
+    public enum AutoReplaceKind
+    {
+        LayoutConversion = 0,
+        SpellCorrection = 1
+    }
 }

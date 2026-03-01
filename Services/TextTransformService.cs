@@ -4,13 +4,9 @@ namespace TranslatorTray.Services;
 
 public sealed class TextTransformService
 {
-    private static readonly HashSet<string> BuiltInProtectedWords = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "ctrl", "alt", "shift", "enter", "tab", "esc", "escape", "space", "del", "delete"
-    };
-
     private readonly LexiconService? _lexicon;
     private readonly PuntoDataService? _puntoData;
+    private readonly ProtectedTermsService? _protectedTerms;
 
     public TextTransformService()
     {
@@ -21,10 +17,11 @@ public sealed class TextTransformService
         _lexicon = lexicon;
     }
 
-    public TextTransformService(LexiconService lexicon, PuntoDataService puntoData)
+    public TextTransformService(LexiconService lexicon, PuntoDataService puntoData, ProtectedTermsService protectedTerms)
     {
         _lexicon = lexicon;
         _puntoData = puntoData;
+        _protectedTerms = protectedTerms;
     }
 
     private static readonly Dictionary<char, char> EnToRu = new()
@@ -94,7 +91,7 @@ public sealed class TextTransformService
             return false;
         }
 
-        if (BuiltInProtectedWords.Contains(trimmed))
+        if (_protectedTerms?.Contains(trimmed) == true)
         {
             return false;
         }

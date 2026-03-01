@@ -58,8 +58,8 @@ public sealed class SettingsForm : Form
         panel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 62));
         Controls.Add(panel);
 
-        _autoSwitch = AddCheck(panel, "Auto switch after delimiter", _settings.AutoSwitchEnabled);
-        _autoCorrect = AddCheck(panel, "Offline autocorrect spelling (safe mode)", _settings.AutoCorrectEnabled);
+        _autoSwitch = AddCheck(panel, "Auto layout/translit correction after delimiter", _settings.AutoSwitchEnabled);
+        _autoCorrect = AddCheck(panel, "Offline spelling/grammar autocorrect (safe mode)", _settings.AutoCorrectEnabled);
         _suspendAfterManual = AddCheck(panel, "Suspend auto until delimiter after manual switch", _settings.SuspendAutoSwitchUntilDelimiterAfterManualSwitch);
         _ruEnOnly = AddCheck(panel, "One-key switch only RU/EN", _settings.OneKeySwitchRuEnOnly);
         _playLayoutSound = AddCheck(panel, "Play sound on layout switch", _settings.PlaySoundOnLayoutSwitch);

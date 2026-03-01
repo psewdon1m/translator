@@ -28,3 +28,4 @@ C:\.projects\translator\bin\Debug\net8.0-windows\Data\hunspell\ru_RU.aff
 C:\.projects\translator\bin\Debug\net8.0-windows\Data\hunspell\ru_RU.dic
 C:\.projects\translator\bin\Debug\net8.0-windows\WeCantSpell.Hunspell.dll
 C:\.projects\translator\obj\Debug\net8.0-windows\Translat.307ABA4F.Up2Date
+C:\.projects\translator\bin\Debug\net8.0-windows\Data\protected_terms.txt

@@ -5,15 +5,18 @@ public sealed class SpellCorrectionService
     private readonly LexiconService _lexicon;
     private readonly HunspellDictionaryService _hunspell;
     private readonly WindowsSpellCheckerService _windowsSpellChecker;
+    private readonly ProtectedTermsService _protectedTerms;
 
     public SpellCorrectionService(
         LexiconService lexicon,
         HunspellDictionaryService hunspell,
-        WindowsSpellCheckerService windowsSpellChecker)
+        WindowsSpellCheckerService windowsSpellChecker,
+        ProtectedTermsService protectedTerms)
     {
         _lexicon = lexicon;
         _hunspell = hunspell;
         _windowsSpellChecker = windowsSpellChecker;
+        _protectedTerms = protectedTerms;
     }
 
     public bool TryAutoCorrectWord(string word, IReadOnlySet<string> protectedWords, out string corrected, out LanguageScript language)
@@ -32,8 +35,18 @@ public sealed class SpellCorrectionService
             return false;
         }
 
+        if (_protectedTerms.Contains(trimmed))
+        {
+            return false;
+        }
+
         language = DetectSimpleScript(trimmed);
         if (language == LanguageScript.Unknown)
+        {
+            return false;
+        }
+
+        if (_protectedTerms.Contains(trimmed))
         {
             return false;
         }

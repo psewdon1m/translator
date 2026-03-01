@@ -19,6 +19,7 @@ public sealed class TrayAppContext : ApplicationContext
     private readonly LexiconService _lexiconService;
     private readonly HunspellDictionaryService _hunspellDictionaryService;
     private readonly WindowsSpellCheckerService _windowsSpellChecker;
+    private readonly ProtectedTermsService _protectedTermsService;
     private readonly PuntoDataService _puntoDataService;
     private readonly TextTransformService _transformService;
     private readonly SpellCorrectionService _spellCorrectionService;
@@ -45,9 +46,10 @@ public sealed class TrayAppContext : ApplicationContext
         _lexiconService = new LexiconService(AppContext.BaseDirectory);
         _hunspellDictionaryService = new HunspellDictionaryService(AppContext.BaseDirectory);
         _windowsSpellChecker = new WindowsSpellCheckerService();
+        _protectedTermsService = new ProtectedTermsService(AppContext.BaseDirectory);
         _puntoDataService = new PuntoDataService(AppContext.BaseDirectory);
-        _transformService = new TextTransformService(_lexiconService, _puntoDataService);
-        _spellCorrectionService = new SpellCorrectionService(_lexiconService, _hunspellDictionaryService, _windowsSpellChecker);
+        _transformService = new TextTransformService(_lexiconService, _puntoDataService, _protectedTermsService);
+        _spellCorrectionService = new SpellCorrectionService(_lexiconService, _hunspellDictionaryService, _windowsSpellChecker, _protectedTermsService);
         _toneService = new ToneService(AppContext.BaseDirectory);
         _inputSimulator = new InputSimulator();
         _clipboardActions = new ClipboardTextActions(_inputSimulator, _transformService);
